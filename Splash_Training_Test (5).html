@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Splash Training Test</title>
+<style>
+:root{
+  --navy:#0b2540; --navy2:#123a5e; --teal:#14b8a6; --teal2:#2dd4bf;
+  --ink:#14213d; --sub:#516079; --bg:#f1f5f9; --card:#ffffff; --ring:#e2e8f0;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 55%,#0d6d63 100%);color:#fff;padding:56px 24px 70px;text-align:center;position:relative}
+.hero h1{font-size:34px;margin:14px 0 8px;font-weight:800}
+.hero .sub{opacity:.9;max-width:620px;margin:0 auto;font-size:16px}
+.eyebrow{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);padding:5px 14px;border-radius:999px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.wrap{max-width:720px;margin:32px auto 60px;padding:0 20px}
+.card{background:var(--card);border-radius:16px;box-shadow:0 12px 34px rgba(15,41,66,.14);padding:32px}
+h2{margin-top:0;font-size:22px;color:var(--navy)}
+label{display:block;font-size:13px;font-weight:700;color:var(--sub);margin:16px 0 6px;text-transform:uppercase;letter-spacing:.03em}
+input[type=text],input[type=email]{width:100%;padding:12px 14px;border:1.5px solid var(--ring);border-radius:10px;font-size:15px;font-family:inherit}
+input:focus{outline:none;border-color:var(--teal)}
+.btn{display:inline-block;background:var(--teal);color:#fff;border:none;padding:13px 26px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:22px}
+.btn:hover{background:#0d9488}
+.btn:disabled{background:#cbd5e1;cursor:not-allowed}
+.btn.secondary{background:#fff;color:var(--navy);border:1.5px solid var(--ring)}
+.btn.secondary:hover{background:#f8fafc}
+.btn-row{display:flex;gap:12px;justify-content:space-between;align-items:center;margin-top:26px}
+
+.progress-wrap{margin-bottom:22px}
+.progress-bar{height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal2));transition:width .25s}
+.progress-label{font-size:12.5px;color:var(--sub);margin-top:8px;display:flex;justify-content:space-between}
+
+.guide-chip{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff;padding:4px 12px;border-radius:999px;margin-bottom:14px}
+
+.qtext{font-size:18px;font-weight:700;margin:0 0 20px;color:var(--ink)}
+.opt{display:block;width:100%;text-align:left;border:1.5px solid var(--ring);background:#fff;padding:13px 16px;border-radius:10px;font-size:15px;cursor:pointer;margin-bottom:10px;transition:.12s}
+.opt:hover{border-color:var(--teal)}
+.opt.selected{border-color:var(--teal);background:#f0fdfa;font-weight:600}
+
+.score-hero{text-align:center;padding:10px 0 20px}
+.score-num{font-size:56px;font-weight:800;color:var(--navy)}
+.score-sub{color:var(--sub);font-size:15px}
+
+table.results{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+table.results th{text-align:left;padding:8px 10px;border-bottom:2px solid var(--ring);font-size:12px;text-transform:uppercase;color:var(--sub)}
+table.results td{padding:9px 10px;border-bottom:1px solid var(--ring)}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12.5px;font-weight:700;color:#fff}
+
+.miss-item{border-left:4px solid #dc2626;background:#fef2f2;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:14px}
+.miss-item .qq{font-weight:700;margin-bottom:4px}
+.miss-item .ans{color:#166534;font-weight:600}
+
+.locked-box{text-align:center;padding:20px 0}
+.locked-box .big{font-size:40px}
+
+.footnote{font-size:12.5px;color:var(--sub);text-align:center;margin-top:18px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <span class="eyebrow">Team Training</span>
+  <h1>Splash Contest Formats &mdash; Training Test</h1>
+  <p class="sub">50 questions covering the NFL Squares, NFL Pick&#39;em, CFB Pick&#39;em, NFL Survivor, and NCAAF Survivor guides.</p>
+</header>
+<div class="wrap">
+  <div id="app"></div>
+</div>
+<script>
+const QUESTIONS = [{"guide": "NFL Squares", "section_num": "5", "section_title": "Edit Grid Settings (Gear Icon)", "question": "Which two grid actions are irreversible/destructive?", "options": [{"text": "Save changes and Cancel", "correct": false}, {"text": "Lock Grid and Delete Grid", "correct": true}, {"text": "Edit Grid Name and Change Scoring Mode", "correct": false}, {"text": "Create New Grid and Print", "correct": false}], "idx": 0}, {"guide": "NFL Squares", "section_num": "6", "section_title": "Contest Settings", "question": "What two tabs live under Contest Settings?", "options": [{"text": "Contest details and Grids", "correct": true}, {"text": "Entrants and Invites", "correct": false}, {"text": "Dashboard and Transactions", "correct": false}, {"text": "Settings and Vault", "correct": false}], "idx": 1}, {"guide": "NFL Squares", "section_num": "5", "section_title": "Edit Grid Settings (Gear Icon)", "question": "What happens when a commissioner locks a grid?", "options": [{"text": "The grid is deleted", "correct": false}, {"text": "Axis numbers are revealed and claims are frozen — irreversible once the game starts", "correct": true}, {"text": "The grid becomes editable again", "correct": false}, {"text": "Entrants are notified by email", "correct": false}], "idx": 2}, {"guide": "NFL Squares", "section_num": "6", "section_title": "Contest Settings", "question": "Which of these is shown in the commissioner sidebar?", "options": [{"text": "Locks countdown badge", "correct": false}, {"text": "Total entries progress", "correct": false}, {"text": "Squares grid / Contest details links", "correct": false}, {"text": "All of the above", "correct": true}], "idx": 3}, {"guide": "NFL Squares", "section_num": "6", "section_title": "Contest Settings", "question": "What does the “State” column show in the Grids table?", "options": [{"text": "The commissioner's home state", "correct": false}, {"text": "The current grid status (e.g., OPEN)", "correct": true}, {"text": "The scoring mode", "correct": false}, {"text": "The number of entrants", "correct": false}], "idx": 4}, {"guide": "NFL Pick'em", "section_num": "05", "section_title": "Contest Settings: General Tab", "question": "Once a contest is live, can Maximum entries per entrant be lowered?", "options": [{"text": "Yes, any time", "correct": false}, {"text": "No — it can only be raised, never lowered", "correct": true}, {"text": "Only by Splash support", "correct": false}], "idx": 5}, {"guide": "NFL Pick'em", "section_num": "06", "section_title": "Contest Settings: Format & Spreads Tab", "question": "Which scoring mode has entrants picking teams to win outright, with no spread involved?", "options": [{"text": "Straight up", "correct": true}, {"text": "Against the spread (Splash-set)", "correct": false}, {"text": "Against the spread (Commissioner-set)", "correct": false}], "idx": 6}, {"guide": "NFL Pick'em", "section_num": "07", "section_title": "Contest Settings: Scoring Tab", "question": "What multiplier keeps a week's default scoring value unchanged?", "options": [{"text": "0x", "correct": false}, {"text": "1x", "correct": true}, {"text": "2x", "correct": false}], "idx": 7}, {"guide": "NFL Pick'em", "section_num": "08", "section_title": "Contest Settings: Picksheet Tab", "question": "If a player misses the deadline and Autopick's Team pick logic is 'All home teams,' what happens?", "options": [{"text": "Their pick is left blank", "correct": false}, {"text": "The home team is automatically filled in", "correct": true}, {"text": "The higher-seeded team is filled in", "correct": false}], "idx": 8}, {"guide": "NFL Pick'em", "section_num": "09", "section_title": "Contest Settings: Segments Tab", "question": "What is the minimum number of segments a commissioner must add if using this feature?", "options": [{"text": "One", "correct": false}, {"text": "Two", "correct": true}, {"text": "Four", "correct": false}], "idx": 9}, {"guide": "NFL Pick'em", "section_num": "10", "section_title": "Contest Settings: Tiebreakers Tab", "question": "In the tiebreaker order list, which item has the highest priority?", "options": [{"text": "The last item in the list", "correct": false}, {"text": "The first item in the list", "correct": true}, {"text": "Whichever is alphabetically first", "correct": false}], "idx": 10}, {"guide": "NFL Pick'em", "section_num": "08", "section_title": "Contest Settings: Picksheet Tab", "question": "What does 'Maximum amount of auto picks' do once the cap is reached?", "options": [{"text": "Locks the entrant out of the contest", "correct": false}, {"text": "Further missed picks grade as losses", "correct": true}, {"text": "Doubles the bonus points", "correct": false}], "idx": 11}, {"guide": "NFL Pick'em", "section_num": "05", "section_title": "Contest Settings: General Tab", "question": "What's the valid range for Maximum entries per entrant?", "options": [{"text": "1 to 10", "correct": false}, {"text": "1 to 250", "correct": true}, {"text": "1 to 1000", "correct": false}], "idx": 12}, {"guide": "NFL Pick'em", "section_num": "06", "section_title": "Contest Settings: Format & Spreads Tab", "question": "With Commissioner-set spreads, what does a negative number mean for the home team?", "options": [{"text": "The home team is the underdog", "correct": false}, {"text": "The home team is favored", "correct": true}, {"text": "The game is a push", "correct": false}], "idx": 13}, {"guide": "NFL Pick'em", "section_num": "07", "section_title": "Contest Settings: Scoring Tab", "question": "'Last drop week' controls...", "options": [{"text": "How many weeks get dropped", "correct": false}, {"text": "The last week eligible to be dropped", "correct": true}, {"text": "When the season ends", "correct": false}], "idx": 14}, {"guide": "NFL Pick'em", "section_num": "08", "section_title": "Contest Settings: Picksheet Tab", "question": "Where would a commissioner override picksheet settings for just one specific week?", "options": [{"text": "Season defaults", "correct": false}, {"text": "Weekly customizations", "correct": true}, {"text": "Segment groups", "correct": false}], "idx": 15}, {"guide": "NFL Pick'em", "section_num": "09", "section_title": "Contest Settings: Segments Tab", "question": "Segment groups are used to...", "options": [{"text": "Assign entrants to office teams", "correct": false}, {"text": "Group weeks into named leaderboard segments", "correct": true}, {"text": "Set the spread lock time", "correct": false}], "idx": 16}, {"guide": "NFL Pick'em", "section_num": "10", "section_title": "Contest Settings: Tiebreakers Tab", "question": "Turning off the weekly tiebreaker question does what to the leaderboard tiebreaker order?", "options": [{"text": "Removes it entirely", "correct": false}, {"text": "It still applies", "correct": true}, {"text": "Locks it to Points only", "correct": false}], "idx": 17}, {"guide": "CFB Pick'em", "section_num": "4", "section_title": "General", "question": "Can \"Maximum entries per entrant\" ever be lowered after the contest goes live?", "options": [{"text": "Yes, any time", "correct": false}, {"text": "No — it can only be raised once live", "correct": true}, {"text": "Only before Week 1 starts", "correct": false}], "idx": 18}, {"guide": "CFB Pick'em", "section_num": "5", "section_title": "Format & Spreads", "question": "In a Commissioner-set ATS contest, who sets the point spreads?", "options": [{"text": "Splash's live odds feed", "correct": false}, {"text": "The commissioner, manually, per game", "correct": true}, {"text": "Entrants vote on the spread", "correct": false}], "idx": 19}, {"guide": "CFB Pick'em", "section_num": "6", "section_title": "Scoring", "question": "What does setting the National Championship week to \"4x\" do?", "options": [{"text": "Requires entrants to make 4 picks", "correct": false}, {"text": "Multiplies every point earned that week by 4", "correct": true}, {"text": "Allows 4 entries per entrant that week only", "correct": false}], "idx": 20}, {"guide": "CFB Pick'em", "section_num": "7", "section_title": "Picksheet — Pick Rules", "question": "What's the default CFB-only pick deadline?", "options": [{"text": "Sunday 1pm ET", "correct": false}, {"text": "Saturday 12pm ET", "correct": true}, {"text": "Friday 6pm ET", "correct": false}], "idx": 21}, {"guide": "CFB Pick'em", "section_num": "8", "section_title": "Picksheet — Season & Weekly Setup", "question": "What must be On for a commissioner to include Top 25 games outside their selected conferences?", "options": [{"text": "Bowl Mode", "correct": false}, {"text": "Include AP Top 25 Games", "correct": true}, {"text": "Weighted Scoring", "correct": false}], "idx": 22}, {"guide": "CFB Pick'em", "section_num": "9", "section_title": "Segments, Tiebreakers & Entrant Groups", "question": "What's the highest-priority tiebreaker that can never be removed from the cascade?", "options": [{"text": "Wins", "correct": false}, {"text": "Points", "correct": true}, {"text": "Win Margin", "correct": false}], "idx": 23}, {"guide": "CFB Pick'em", "section_num": "10", "section_title": "Design & Settings Preview", "question": "Where can a commissioner quickly double-check their whole configuration without opening every tab?", "options": [{"text": "The Activity log", "correct": false}, {"text": "The Settings Preview panel", "correct": true}, {"text": "The Entrants manager", "correct": false}], "idx": 24}, {"guide": "CFB Pick'em", "section_num": "4", "section_title": "General", "question": "A player joins in Week 6 of a CFB Pick'em contest. What happens to Weeks 1–5?", "options": [{"text": "Those weeks are excluded from their season total entirely", "correct": false}, {"text": "They're scored 0-for-every-required-pick on those completed weeks", "correct": true}, {"text": "The commissioner must manually enter picks for them", "correct": false}], "idx": 25}, {"guide": "CFB Pick'em", "section_num": "5", "section_title": "Format & Spreads", "question": "What does \"hooking\" a spread do?", "options": [{"text": "Doubles the point value of the game", "correct": false}, {"text": "Adds a half-point so a push can't happen", "correct": true}, {"text": "Locks the spread permanently at kickoff", "correct": false}], "idx": 26}, {"guide": "CFB Pick'em", "section_num": "6", "section_title": "Scoring", "question": "What does \"Last Drop Week\" control?", "options": [{"text": "The last week entries can be edited", "correct": false}, {"text": "The latest week that's still eligible to be dropped from a total", "correct": true}, {"text": "The last week of the regular season", "correct": false}], "idx": 27}, {"guide": "CFB Pick'em", "section_num": "7", "section_title": "Picksheet — Pick Rules", "question": "Which setting must be off before \"Must Pick ≥ X games\" can be turned on?", "options": [{"text": "Best Picks per Week", "correct": false}, {"text": "Autopick", "correct": true}, {"text": "Drop Worst Week", "correct": false}], "idx": 28}, {"guide": "CFB Pick'em", "section_num": "8", "section_title": "Picksheet — Season & Weekly Setup", "question": "Can Bowl Mode be turned off once it's enabled?", "options": [{"text": "Yes, any time before the National Championship", "correct": false}, {"text": "No — it's permanent once enabled", "correct": true}, {"text": "Only a Splash admin can disable it", "correct": false}], "idx": 29}, {"guide": "NFL Survivor", "section_num": "", "section_title": "General", "question": "What is the default Entry Deadline setting for a Survivor contest?", "options": [{"text": "Off — no deadline", "correct": true}, {"text": "End of Week 1", "correct": false}, {"text": "24 hours before kickoff", "correct": false}, {"text": "Same as Pick Deadline", "correct": false}], "idx": 30}, {"guide": "NFL Survivor", "section_num": "", "section_title": "Picksheet & Eligibility", "question": "What does the Team Use Limit control?", "options": [{"text": "How many entrants can pick the same team", "correct": false}, {"text": "How many times a single team can be picked across an entry's lifetime", "correct": true}, {"text": "How many teams appear on the picksheet", "correct": false}, {"text": "How many games are shown per week", "correct": false}], "idx": 31}, {"guide": "NFL Survivor", "section_num": "", "section_title": "Pick Format", "question": "Under Straight Up scoring, what determines a correct pick?", "options": [{"text": "Covering a point spread", "correct": false}, {"text": "The picked team winning (or losing, in loser pools) outright", "correct": true}, {"text": "Total points scored", "correct": false}, {"text": "Margin of victory", "correct": false}], "idx": 32}, {"guide": "NFL Survivor", "section_num": "", "section_title": "Lives & Revivals", "question": "If Entry Lives is set to 1, what happens on an entry's first incorrect pick?", "options": [{"text": "Nothing — 1 life means 1 free mulligan", "correct": false}, {"text": "The entry is eliminated", "correct": true}, {"text": "The entry gets a bonus life", "correct": false}, {"text": "The entry skips a week", "correct": false}], "idx": 33}, {"guide": "NFL Survivor", "section_num": "", "section_title": "Missed Picks & Auto-Pick", "question": "What is the default setting for Auto Picks in Survivor?", "options": [{"text": "On for everyone", "correct": false}, {"text": "Off", "correct": true}, {"text": "On, but only for late joiners", "correct": false}, {"text": "Determined by the entrant's first pick", "correct": false}], "idx": 34}, {"guide": "NFL Survivor", "section_num": "", "section_title": "Tiebreakers", "question": "What is the default Tiebreaker Resolution setting?", "options": [{"text": "Single winner via tiebreaker stack", "correct": false}, {"text": "Split (co-winners)", "correct": true}, {"text": "Sudden death round", "correct": false}, {"text": "Commissioner decides manually", "correct": false}], "idx": 35}, {"guide": "NFL Survivor", "section_num": "", "section_title": "Tiebreakers", "question": "Can tiebreaker settings be changed once the contest has started?", "options": [{"text": "No, they lock at kickoff", "correct": false}, {"text": "Yes, at any time, even mid-contest", "correct": true}, {"text": "Only during the postseason", "correct": false}, {"text": "Only if no entries remain", "correct": false}], "idx": 36}, {"guide": "NFL Survivor", "section_num": "", "section_title": "Lives & Revivals", "question": "What does 'Stop Issuing Lives After Week' do?", "options": [{"text": "Ends the contest early", "correct": false}, {"text": "Sets a cutoff after which no more mulligans are granted", "correct": true}, {"text": "Removes existing lives from all entries", "correct": false}, {"text": "Locks the picksheet", "correct": false}], "idx": 37}, {"guide": "NFL Survivor", "section_num": "", "section_title": "Picksheet & Eligibility", "question": "What happens when Playoff Reset is turned on?", "options": [{"text": "All entries are eliminated", "correct": false}, {"text": "Team-use counts and pick history reset when the postseason begins", "correct": true}, {"text": "The picksheet locks permanently", "correct": false}, {"text": "Lives are doubled", "correct": false}], "idx": 38}, {"guide": "NFL Survivor", "section_num": "", "section_title": "Pick Format", "question": "In a multi-pick week, what happens if an entry gets one of its required picks wrong?", "options": [{"text": "Nothing, only the majority counts", "correct": false}, {"text": "The entry loses 1 life total for the week", "correct": true}, {"text": "The entry is instantly eliminated", "correct": false}, {"text": "The wrong pick is replaced automatically", "correct": false}], "idx": 39}, {"guide": "NCAAF Survivor", "section_num": "4", "section_title": "Contest Settings — General", "question": "What does the CFB schedule run from and to by default?", "options": [{"text": "Week 1 to the Super Bowl", "correct": false}, {"text": "Week 1 to the CFB National Championship", "correct": true}, {"text": "Week 1 to Championship Saturday", "correct": false}], "idx": 40}, {"guide": "NCAAF Survivor", "section_num": "5", "section_title": "Contest Settings — Picksheet & Eligibility", "question": "Which of these picksheet filters is exclusive to College and Combined contests?", "options": [{"text": "Team use limit", "correct": false}, {"text": "Select Conferences", "correct": true}, {"text": "Pick-against team limit", "correct": false}], "idx": 41}, {"guide": "NCAAF Survivor", "section_num": "6", "section_title": "Contest Settings — Pick Format", "question": "Why might a commissioner choose Against the Spread (Commissioner-set) over Splash-set?", "options": [{"text": "It's the only option available for CFB", "correct": false}, {"text": "They want full manual control over the spread numbers", "correct": true}, {"text": "It removes the Team Use Limit", "correct": false}], "idx": 42}, {"guide": "NCAAF Survivor", "section_num": "7", "section_title": "Contest Settings — Lives & Revivals", "question": "What's the maximum number of Entry lives a commissioner can set?", "options": [{"text": "5", "correct": false}, {"text": "10", "correct": true}, {"text": "18", "correct": false}], "idx": 43}, {"guide": "NCAAF Survivor", "section_num": "8", "section_title": "Contest Settings — Missed Picks & Auto-Pick", "question": "What happens to a missed pick when Auto Picks is off?", "options": [{"text": "It's automatically filled with a Random pick", "correct": false}, {"text": "It costs the entry a life (after any available Bye Pick)", "correct": true}, {"text": "The entry is immediately eliminated regardless of lives", "correct": false}], "idx": 44}, {"guide": "NCAAF Survivor", "section_num": "9", "section_title": "Contest Settings — Tiebreakers", "question": "What's the default Tiebreaker Resolution?", "options": [{"text": "Single winner via tiebreaker stack", "correct": false}, {"text": "Split (co-winners)", "correct": true}, {"text": "Sudden-death overtime week", "correct": false}], "idx": 45}, {"guide": "NCAAF Survivor", "section_num": "7", "section_title": "Contest Settings — Lives & Revivals", "question": "Where does a commissioner go to manually revive a single eliminated entry?", "options": [{"text": "Lives & Revivals tab", "correct": false}, {"text": "Entrants Manager", "correct": true}, {"text": "Invites Manager", "correct": false}], "idx": 46}, {"guide": "NCAAF Survivor", "section_num": "4", "section_title": "Contest Settings — General", "question": "What does Lock entries immediately do?", "options": [{"text": "Locks each week's picks the moment the slate starts", "correct": false}, {"text": "Stops new members from joining right away, regardless of the entry deadline", "correct": true}, {"text": "Prevents the commissioner from editing settings", "correct": false}], "idx": 47}, {"guide": "NCAAF Survivor", "section_num": "5", "section_title": "Contest Settings — Picksheet & Eligibility", "question": "What's the default for Exclude FCS Games?", "options": [{"text": "Off — FCS matchups show by default", "correct": false}, {"text": "On — FCS matchups are hidden by default", "correct": true}, {"text": "It can only be set by Splash support", "correct": false}], "idx": 48}, {"guide": "NCAAF Survivor", "section_num": "6", "section_title": "Contest Settings — Pick Format", "question": "How does a commissioner set up a multi-pick week?", "options": [{"text": "Toggle Multi-Pick Weeks on in the General tab", "correct": false}, {"text": "Use the +/- controls in Picks per slate to raise the required picks for that week", "correct": true}, {"text": "Contact Splash support to enable it", "correct": false}], "idx": 49}];
+const GUIDE_COLORS = {"NFL Squares": "#0d9488", "NFL Pick'em": "#2563eb", "CFB Pick'em": "#c2410c", "NFL Survivor": "#7e22ce", "NCAAF Survivor": "#0b2540"};
+const GUIDE_ORDER = ["NFL Squares", "NFL Pick'em", "CFB Pick'em", "NFL Survivor", "NCAAF Survivor"];
+const TARGET_EMAIL = "aappleyard@splashsports.com";
+// Fill this in once you create a Formspree form (https://formspree.io) and verify aappleyard@gmail.com.
+// e.g. "https://formspree.io/f/abcdwxyz" -- leave blank to use the one-click email fallback instead.
+const FORMSPREE_ENDPOINT = "";
+// Minimum score (percent) required to pass. Set to 100 -- reps must get every
+// question right before results are sent.
+const PASS_THRESHOLD = 100;
+
+// Only these emails may take the test. Case-insensitive, trimmed.
+// NOTE: this is a client-side check only -- anyone who reads the page
+// source or opens dev tools could see this list or bypass the check.
+// It stops casual/accidental access, not a determined bad actor.
+const ALLOWED_EMAILS = [
+  "tdeacon@splashsports.com",
+  "alittle@splashsports.com",
+  "aappleyard@splashsports.com",
+  "aantic@team.splashsports.com",
+  "dfrancis@team.splashsports.com",
+  "jvukovic@team.splashsports.com",
+  "mcvijovic@team.splashsports.com",
+  "mdrageljevic@team.splashsports.com",
+  "nnikolic@team.splashsports.com",
+  "apopovic@team.splashsports.com",
+];
+
+let current = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let taker = { name: "", email: "" };
+
+function $(sel){ return document.querySelector(sel); }
+
+function renderDenied(email){
+  $("#app").innerHTML = `
+    <div class="card locked-box">
+      <div class="big">\u{1F6AB}</div>
+      <h2>Access restricted</h2>
+      <p style="color:var(--sub)">The email <b>${email}</b> isn't on the approved list for this test. If you believe this is a mistake, contact your training lead.</p>
+      <div style="text-align:center;">
+        <button class="btn secondary" id="back-to-gate-btn">Try a different email</button>
+      </div>
+    </div>
+  `;
+  $("#back-to-gate-btn").onclick = () => renderStart();
+}
+
+function renderStart(){
+  $("#app").innerHTML = `
+    <div class="card">
+      <h2>Before you begin</h2>
+      <p style="color:var(--sub)">This is a ${QUESTIONS.length}-question test covering NFL Squares, NFL Pick'em, CFB Pick'em, NFL Survivor, and NCAAF Survivor. Access is limited to approved CS team emails. You can retake it as many times as you need to get everything right &mdash; your results are sent to your training lead after every attempt.</p>
+      <label>Your name</label>
+      <input type="text" id="in-name" placeholder="Jane Doe" value="${taker.name || ""}">
+      <label>Your email</label>
+      <input type="email" id="in-email" placeholder="jane@splashsports.com" value="${taker.email || ""}">
+      <button class="btn" id="start-btn">Begin Test</button>
+    </div>
+  `;
+  $("#start-btn").onclick = () => {
+    const name = $("#in-name").value.trim();
+    const email = $("#in-email").value.trim();
+    if(!name || !email){ alert("Please enter your name and email before starting."); return; }
+    const normalized = email.toLowerCase();
+    const isAllowed = ALLOWED_EMAILS.some(e => e.toLowerCase() === normalized);
+    if(!isAllowed){ renderDenied(email); return; }
+    taker = { name, email };
+    current = 0;
+    renderQuestion();
+  };
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[current];
+  const pct = Math.round(((current) / QUESTIONS.length) * 100);
+  const color = GUIDE_COLORS[q.guide] || "#0d9488";
+  const selected = answers[current];
+  $("#app").innerHTML = `
+    <div class="card">
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="progress-label"><span>Question ${current+1} of ${QUESTIONS.length}</span><span>${pct}% complete</span></div>
+      </div>
+      <span class="guide-chip" style="background:${color}">${q.guide} &middot; ${q.section_title}</span>
+      <p class="qtext">${q.question}</p>
+      <div id="opts"></div>
+      <div class="btn-row">
+        <button class="btn secondary" id="back-btn" ${current === 0 ? "disabled" : ""}>&larr; Back</button>
+        <button class="btn" id="next-btn" ${selected === null ? "disabled" : ""}>${current === QUESTIONS.length - 1 ? "Submit Test" : "Next \u2192"}</button>
+      </div>
+    </div>
+  `;
+  const optsWrap = $("#opts");
+  q.options.forEach((opt, i) => {
+    const div = document.createElement("button");
+    div.type = "button";
+    div.className = "opt" + (selected === i ? " selected" : "");
+    div.textContent = opt.text;
+    div.onclick = () => {
+      answers[current] = i;
+      renderQuestion();
+    };
+    optsWrap.appendChild(div);
+  });
+  $("#back-btn").onclick = () => { if(current > 0){ current--; renderQuestion(); } };
+  $("#next-btn").onclick = () => {
+    if(answers[current] === null) return;
+    if(current === QUESTIONS.length - 1){ finishTest(); }
+    else { current++; renderQuestion(); }
+  };
+}
+
+async function finishTest(){
+  let correctCount = 0;
+  const byGuide = {};
+  const misses = [];
+  const details = [];
+  QUESTIONS.forEach((q, i) => {
+    const chosen = answers[i];
+    const correctIdx = q.options.findIndex(o => o.correct);
+    const isCorrect = chosen === correctIdx;
+    const chosenText = chosen !== null ? q.options[chosen].text : "(no answer)";
+    const correctText = q.options[correctIdx].text;
+    if(!byGuide[q.guide]) byGuide[q.guide] = { correct: 0, total: 0 };
+    byGuide[q.guide].total++;
+    if(isCorrect){ correctCount++; byGuide[q.guide].correct++; }
+    else { misses.push({ guide: q.guide, section: q.section_title, question: q.question, correctAnswer: correctText, chosenAnswer: chosenText }); }
+    details.push({ n: i + 1, guide: q.guide, section: q.section_title, question: q.question, chosenAnswer: chosenText, correctAnswer: correctText, isCorrect });
+  });
+  const score = Math.round((correctCount / QUESTIONS.length) * 100);
+  const date = new Date().toLocaleDateString();
+
+  const result = { name: taker.name, email: taker.email, score, correctCount, total: QUESTIONS.length, date, byGuide, misses, details };
+  const isPassing = score >= PASS_THRESHOLD;
+
+  let autoSent = false;
+  if(isPassing && FORMSPREE_ENDPOINT){
+    try{
+      const resp = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          name: result.name, email: result.email, score: `${result.score}%`,
+          date: result.date, summary: buildPlainSummary(result),
+        }),
+      });
+      autoSent = resp.ok;
+    } catch(e){ autoSent = false; }
+  }
+
+  renderResults(result, autoSent);
+}
+
+function buildPlainSummary(result){
+  const lines = [];
+  lines.push(`Training Test Results`);
+  lines.push(`Name: ${result.name}`);
+  lines.push(`Email: ${result.email}`);
+  lines.push(`Date: ${result.date}`);
+  lines.push(`Overall score: ${result.correctCount}/${result.total} (${result.score}%)`);
+  lines.push(``);
+  lines.push(`Breakdown by guide:`);
+  GUIDE_ORDER.forEach(g => {
+    const b = result.byGuide[g];
+    if(b) lines.push(`- ${g}: ${b.correct}/${b.total}`);
+  });
+  lines.push(``);
+  lines.push(`Full results, question by question:`);
+  result.details.forEach(d => {
+    const mark = d.isCorrect ? "CORRECT" : "INCORRECT";
+    lines.push(`${d.n}. [${mark}] [${d.guide} / ${d.section}] ${d.question}`);
+    lines.push(`    Their answer: ${d.chosenAnswer}`);
+    if(!d.isCorrect) lines.push(`    Correct answer: ${d.correctAnswer}`);
+  });
+  return lines.join("\n");
+}
+
+function buildCompactSummary(result){
+  const lines = [];
+  lines.push(`Training Test Results`);
+  lines.push(`Name: ${result.name}`);
+  lines.push(`Email: ${result.email}`);
+  lines.push(`Date: ${result.date}`);
+  lines.push(`Overall score: ${result.correctCount}/${result.total} (${result.score}%)`);
+  lines.push(``);
+  lines.push(`Breakdown by guide:`);
+  GUIDE_ORDER.forEach(g => {
+    const b = result.byGuide[g];
+    if(b) lines.push(`- ${g}: ${b.correct}/${b.total}`);
+  });
+  lines.push(``);
+  if(result.misses.length){
+    lines.push(`Missed questions (${result.misses.length} of ${result.total}):`);
+    result.misses.forEach(m => {
+      lines.push(`- [${m.guide} / ${m.section}] ${m.question}`);
+      lines.push(`    Their answer: ${m.chosenAnswer}`);
+      lines.push(`    Correct answer: ${m.correctAnswer}`);
+    });
+  } else {
+    lines.push(`Perfect score \u2014 no missed questions.`);
+  }
+  lines.push(``);
+  lines.push(`(Full question-by-question results were too long to fit in this email link \u2014 use the "Copy Full Results" button on the results screen to paste the complete breakdown somewhere.)`);
+  return lines.join("\n");
+}
+
+function buildMinimalSummary(result){
+  const lines = [];
+  lines.push(`Training Test Results`);
+  lines.push(`Name: ${result.name}`);
+  lines.push(`Email: ${result.email}`);
+  lines.push(`Date: ${result.date}`);
+  lines.push(`Overall score: ${result.correctCount}/${result.total} (${result.score}%)`);
+  lines.push(``);
+  lines.push(`Breakdown by guide:`);
+  GUIDE_ORDER.forEach(g => {
+    const b = result.byGuide[g];
+    if(b) lines.push(`- ${g}: ${b.correct}/${b.total}`);
+  });
+  lines.push(``);
+  lines.push(`(The detailed question-by-question breakdown was too long to fit in an email link. Use the "Copy Full Results" button on the results screen and paste the complete breakdown into the email or a doc.)`);
+  return lines.join("\n");
+}
+
+function buildMailto(result){
+  const subject = encodeURIComponent(`Training Test Results \u2014 ${result.name} (${result.correctCount}/${result.total})`);
+  // Most mail clients/browsers choke somewhere around 1800-2000 chars in a mailto URL.
+  // Try the full breakdown first, then a misses-only version, then a guide-only summary.
+  const candidates = [buildPlainSummary(result), buildCompactSummary(result), buildMinimalSummary(result)];
+  let body = encodeURIComponent(candidates[candidates.length - 1]);
+  for(const candidate of candidates){
+    const encoded = encodeURIComponent(candidate);
+    if(encoded.length <= 1500){ body = encoded; break; }
+  }
+  return `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
+}
+
+function renderResults(result, autoSent){
+  const guideRows = GUIDE_ORDER.map(g => {
+    const b = result.byGuide[g];
+    if(!b) return "";
+    const pct = Math.round((b.correct / b.total) * 100);
+    return `<tr><td><span class="pill" style="background:${GUIDE_COLORS[g]}">${g}</span></td><td>${b.correct} / ${b.total}</td><td>${pct}%</td></tr>`;
+  }).join("");
+
+  const isPassing = result.score >= PASS_THRESHOLD;
+
+  if(!isPassing){
+    // No answers, no missed-question list -- just the score and a nudge to retake.
+    $("#app").innerHTML = `
+      <div class="card">
+        <div class="score-hero">
+          <div class="score-num">${result.correctCount} / ${result.total}</div>
+          <div class="score-sub">${result.score}% &middot; ${result.name}</div>
+        </div>
+        <table class="results">
+          <tr><th>Guide</th><th>Score</th><th>%</th></tr>
+          ${guideRows}
+        </table>
+        <p style="text-align:center;color:var(--sub);margin-top:20px;">You need a perfect score (100%) to pass. Review the guides and give it another shot &mdash; you can retake as many times as you need.</p>
+        <div style="text-align:center;">
+          <button class="btn" id="retake-btn" style="margin-top:10px;">Retake Test</button>
+        </div>
+        <p class="footnote">Results are only sent to your training lead once you get a perfect score.</p>
+      </div>
+    `;
+    $("#retake-btn").onclick = () => {
+      answers = new Array(QUESTIONS.length).fill(null);
+      current = 0;
+      renderStart();
+    };
+    return;
+  }
+
+  // Passing score: show the send step.
+  const sendBlock = autoSent
+    ? `<p style="text-align:center;color:#16a34a;font-weight:700;">\u2713 Results sent automatically.</p>`
+    : `
+      <div style="text-align:center;">
+        <a class="btn" id="email-btn" href="#">Email My Results</a>
+      </div>
+      <p class="footnote">Clicking "Email My Results" opens your email app with the results pre-filled, addressed to your training lead. Just hit send.</p>
+    `;
+
+  $("#app").innerHTML = `
+    <div class="card">
+      <div class="score-hero">
+        <div class="score-num">${result.correctCount} / ${result.total}</div>
+        <div class="score-sub">\u{1F389} Perfect score &middot; ${result.name}</div>
+      </div>
+      <table class="results">
+        <tr><th>Guide</th><th>Score</th><th>%</th></tr>
+        ${guideRows}
+      </table>
+      ${sendBlock}
+      <div style="text-align:center;">
+        <button class="btn secondary" id="retake-btn" style="margin-top:14px;">Retake Test</button>
+      </div>
+    </div>
+  `;
+  if(!autoSent){
+    $("#email-btn").href = buildMailto(result);
+  }
+  $("#retake-btn").onclick = () => {
+    answers = new Array(QUESTIONS.length).fill(null);
+    current = 0;
+    renderStart();
+  };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderStart();
+});
+</script>
+</body>
+</html>
