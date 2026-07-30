@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrants Manager — CS Training Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#2FD1D9;
+    --accent-deep:#0B6E73;
+    --accent-tint:#E5FAFB;
+    --black:#1A1A1A;
+
+    --ink:var(--black);
+    --muted:#6B6B6B;
+    --line:#E4E4E4;
+    --line-strong:#CFCFCF;
+    --panel:#F5F5F5;
+    --white:#FFFFFF;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--white); color:var(--ink); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3{ font-family:'Oswald', sans-serif; letter-spacing:0.02em; }
+  a{ color:var(--accent-deep); }
+
+  .scoreboard{ position:sticky; top:0; z-index:50; background:var(--white); border-bottom:1px solid var(--line); padding:20px 32px 20px; }
+  .scoreboard-top{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px; max-width:1080px; margin:0 auto; }
+  .brand-eyebrow{ font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent-deep); margin:0 0 6px; font-weight:600; }
+  .brand-title{ font-size:30px; font-weight:600; margin:0; color:var(--ink); }
+  .brand-sub{ font-size:13px; color:var(--muted); margin:4px 0 0; }
+  .stat-strip{ display:flex; gap:22px; }
+  .stat{ text-align:right; }
+  .stat-num{ font-family:'Oswald',sans-serif; font-size:22px; font-weight:600; color:var(--black); line-height:1; }
+  .stat-label{ font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+
+  main{ max-width:1080px; margin:0 auto; padding:36px 32px 80px; }
+  .section-head{ display:flex; align-items:baseline; gap:12px; margin:0 0 6px; }
+  .section-num{ font-family:'JetBrains Mono',monospace; color:var(--accent-deep); font-size:13px; }
+  .section-title{ font-size:24px; font-weight:600; margin:0; }
+  .section-intro{ color:var(--muted); font-size:14.5px; line-height:1.65; max-width:680px; margin:0 0 34px; }
+
+  h3.block-title{ font-size:15px; font-weight:600; color:var(--ink); margin:44px 0 16px; letter-spacing:0.03em; text-transform:uppercase; }
+  h3.block-title:not(:first-of-type){ border-top:1px solid var(--line); padding-top:28px; }
+
+  .pillars{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:40px; }
+  .pillar{ background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+  .pillar-name{ font-family:'Oswald',sans-serif; font-size:14px; font-weight:600; color:var(--black); margin:0 0 6px; }
+  .pillar-text{ font-size:12.5px; color:var(--muted); line-height:1.5; margin:0; }
+
+  .value-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:40px; }
+  .flip-card{ perspective:1000px; height:150px; cursor:pointer; }
+  .flip-inner{ position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flip-card.flipped .flip-inner{ transform:rotateY(180deg); }
+  .flip-face{ position:absolute; inset:0; backface-visibility:hidden; border-radius:10px; padding:16px; border:1px solid var(--line); }
+  .flip-front{ background:var(--white); display:flex; flex-direction:column; justify-content:space-between; }
+  .flip-back{ background:var(--accent-tint); border-color:var(--accent); transform:rotateY(180deg); display:flex; align-items:center; }
+  .flip-front .tag{ font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--accent-deep); text-transform:uppercase; letter-spacing:.06em; }
+  .flip-front .vname{ font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; color:var(--ink); }
+  .flip-hint{ font-size:10px; color:var(--muted); }
+  .flip-back p{ font-size:12.5px; line-height:1.55; color:var(--black); margin:0; }
+
+  .journey{ display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+  .journey-stage{ flex:1; min-width:130px; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 14px; cursor:pointer; }
+  .journey-stage.active{ border-color:var(--accent); background:var(--accent-tint); }
+  .journey-stage .jnum{ font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent-deep); }
+  .journey-stage .jname{ font-size:13px; font-weight:600; margin-top:4px; color:var(--ink); }
+  .journey-detail{ background:var(--accent-tint); border:1px solid var(--accent); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:16px 18px; margin:10px 0 40px; font-size:13px; color:var(--accent-deep); line-height:1.6; }
+
+  .standards-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+  .std-card{ background:var(--accent-tint); border:1px solid var(--line); border-radius:10px; padding:14px 16px; text-align:center; }
+  .std-num{ font-family:'Oswald',sans-serif; font-size:26px; font-weight:600; color:var(--black); }
+  .std-label{ font-size:10.5px; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:.04em; }
+
+  .path-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:40px; }
+  .path-card{ background:var(--white); border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
+  .path-card .path-tag{ font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent-deep); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; display:inline-block; background:var(--accent-tint); padding:3px 8px; border-radius:5px; }
+  .path-card p{ font-size:13px; color:var(--muted); line-height:1.6; margin:0; }
+  .path-card p b{ color:var(--ink); }
+
+  .ref-table{ border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:18px; }
+  .ref-head{ display:grid; background:var(--black); }
+  .ref-head span{ padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--white); }
+  .ref-row{ display:grid; }
+  .ref-row + .ref-row{ border-top:1px solid var(--line); }
+  .ref-cell{ padding:12px 14px; font-size:12.5px; line-height:1.55; }
+  .ref-cell.label{ color:var(--ink); font-weight:600; }
+  .ref-cell.desc{ color:var(--muted); }
+  .ref-table.cols-1-2 .ref-head, .ref-table.cols-1-2 .ref-row{ grid-template-columns:1fr 2.2fr; }
+  .ref-table.cols-1-1 .ref-head, .ref-table.cols-1-1 .ref-row{ grid-template-columns:1fr 1fr; }
+
+  .banner{ border-radius:10px; padding:18px 20px; margin-bottom:20px; border:1px solid; }
+  .banner.strong{ background:var(--panel); border-color:var(--black); }
+  .banner.soft{ background:var(--accent-tint); border-color:var(--accent); }
+  .banner .b-eyebrow{ font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; }
+  .banner.strong .b-eyebrow{ color:var(--black); }
+  .banner.soft .b-eyebrow{ color:var(--accent-deep); }
+  .banner p{ font-size:14.5px; font-weight:500; margin:0; color:var(--ink); line-height:1.55; }
+
+  .accordion-item{ border:1px solid var(--line); border-radius:8px; margin-bottom:8px; overflow:hidden; background:var(--white); }
+  .accordion-head{ display:flex; align-items:center; justify-content:space-between; padding:13px 16px; cursor:pointer; }
+  .accordion-head .ah-left{ display:flex; align-items:center; gap:10px; }
+  .accordion-title{ font-size:13.5px; font-weight:500; color:var(--ink); }
+  .accordion-arrow{ color:var(--muted); font-size:11px; transition:transform .2s; }
+  .accordion-item.open .accordion-arrow{ transform:rotate(180deg); }
+  .accordion-body{ max-height:0; overflow:hidden; transition:max-height .3s ease; }
+  .accordion-item.open .accordion-body{ max-height:340px; }
+  .accordion-body-inner{ padding:0 16px 16px 16px; font-size:12.5px; color:var(--muted); line-height:1.6; }
+
+  .fine-print{ font-size:11.5px; color:var(--muted); font-style:italic; margin:0 0 30px; }
+
+  footer{ border-top:1px solid var(--line); padding:26px 32px; max-width:1080px; margin:0 auto; }
+  .foot-grid{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:12.5px; color:var(--muted); }
+
+  @media (max-width:760px){
+    .stat-strip{ display:none; }
+    .pillars, .value-grid, .path-grid{ grid-template-columns:repeat(1,1fr); }
+    .standards-grid{ grid-template-columns:repeat(1,1fr); }
+    .journey{ flex-direction:column; }
+    .ref-table.cols-1-2 .ref-head, .ref-table.cols-1-2 .ref-row,
+    .ref-table.cols-1-1 .ref-head, .ref-table.cols-1-1 .ref-row{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scoreboard">
+  <div class="scoreboard-top">
+    <div>
+      <p class="brand-eyebrow">Splash Sports · Customer Support Enablement</p>
+      <h1 class="brand-title">Entrants Manager — CS Training Guide</h1>
+      <p class="brand-sub">Everything support needs to help commissioners manage their roster, payments, missing picks, and picks made on a member's behalf.</p>
+    </div>
+    <div class="stat-strip">
+      <div class="stat"><div class="stat-num">9</div><div class="stat-label">Filter pills</div></div>
+      <div class="stat"><div class="stat-num">1,000</div><div class="stat-label">Msg char limit</div></div>
+      <div class="stat"><div class="stat-num">Per-entry</div><div class="stat-label">Pause/Remove scope</div></div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <section id="panel-0">
+    <div class="section-head"><span class="section-num">01</span><h2 class="section-title">Entrants Manager Basics</h2></div>
+    <p class="section-intro">The 30-second version: Entrants Manager is the commissioner's roster hub, inside the Commissioner Console, alongside Email entrants and Pick log. It's where they track who's in, who's paid, who's missing picks, and where they can message, pause, or remove entrants. A large share of commissioner tickets trace back to this one screen — here's how it actually works.</p>
+
+    <div class="pillars">
+      <div class="pillar"><p class="pillar-name">Entrants tab</p><p class="pillar-text">The searchable roster — filter, mark paid, add notes, export, and take bulk action.</p></div>
+      <div class="pillar"><p class="pillar-name">Email entrants</p><p class="pillar-text">Message all entrants or just the ones missing picks, from the commissioner's name or handle.</p></div>
+      <div class="pillar"><p class="pillar-name">Pick log</p><p class="pillar-text">Audit trail of already-locked picks by week/slate — never live or future picks.</p></div>
+      <div class="pillar"><p class="pillar-name">Manage entries</p><p class="pillar-text">Per-entry drill-down — weekly Make Picks buttons, and independent Pause/Remove per entry.</p></div>
+    </div>
+
+    <h3 class="block-title">The three facts that drive every ticket — tap a card</h3>
+    <div class="value-grid" id="flipGrid"></div>
+
+    <h3 class="block-title">Path 1 — Making a pick for a member</h3>
+    <div class="journey" id="stageBar"></div>
+    <div class="journey-detail" id="stageDetail"></div>
+
+    <h3 class="block-title">Path 2 — Reaching entrants who are missing picks</h3>
+    <div class="path-grid">
+      <div class="path-card">
+        <span class="path-tag">Bulk select</span>
+        <p>On the Entrants tab, filter to <b>Missing picks</b>, check the boxes for the entrants who need a nudge, then click <b>Email (N)</b> from the action bar — it jumps to Email entrants with those recipients pre-filled.</p>
+      </div>
+      <div class="path-card">
+        <span class="path-tag">Email entrants tab</span>
+        <p>Skip the selection step entirely — go straight to <b>Email entrants</b> and choose the <b>Missing picks (N)</b> recipient group, pick a sender identity (full name or Splash handle), write a message, and send.</p>
+      </div>
+    </div>
+
+    <h3 class="block-title">Key numbers</h3>
+    <div class="standards-grid">
+      <div class="std-card"><div class="std-num">9</div><div class="std-label">Filter pills on the Entrants tab</div></div>
+      <div class="std-card"><div class="std-num">1,000</div><div class="std-label">Character limit, custom message</div></div>
+      <div class="std-card"><div class="std-num">Per entry</div><div class="std-label">Scope of Pause / Remove</div></div>
+    </div>
+    <p class="fine-print">*Missing picks counts refresh live as picks lock. Pause and Remove always act on the specific entry selected, never the whole entrant automatically.</p>
+
+    <h3 class="block-title">Key facts &amp; rules cheat sheet</h3>
+    <p class="section-intro" style="margin-bottom:16px;">The details support teams will get asked about most.</p>
+    <div class="ref-table cols-1-2">
+      <div class="ref-head"><span>Item</span><span>Detail</span></div>
+      <div id="cheatSheetRows"></div>
+    </div>
+
+    <h3 class="block-title">Filter pills quick reference</h3>
+    <p class="section-intro" style="margin-bottom:16px;">Every pill shows a live count and narrows the Entrants table instantly.</p>
+    <div class="ref-table cols-1-1">
+      <div class="ref-head"><span>Pill</span><span>What it shows</span></div>
+      <div id="filterPillRows"></div>
+    </div>
+
+    <div class="banner soft" style="margin-top:18px;">
+      <div class="b-eyebrow">Don't tell commissioners Remove is reversible</div>
+      <p>Pause freezes an entrant or entry without deleting history and can be reversed. Remove takes them out of the contest entirely and is the more permanent action — if a commissioner isn't sure whether someone's coming back, steer them to Pause first.</p>
+    </div>
+
+    <h3 class="block-title">Who's involved</h3>
+    <div class="ref-table cols-1-2">
+      <div class="ref-head"><span>Role</span><span>What they do</span></div>
+      <div id="rosterRows"></div>
+    </div>
+
+    <div class="banner strong">
+      <div class="b-eyebrow">The one rule that matters most</div>
+      <p>Pause is reversible. Remove is not. When a commissioner isn't sure whether an entrant is coming back — late payment, temporary no-show, anything uncertain — the safe default answer from CS is always Pause, not Remove.</p>
+    </div>
+
+    <h3 class="block-title">Rules for Entrants Manager</h3>
+    <div id="faqAccordion"></div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot-grid">
+    <span>Key channel: #splash-commissioner-support (confirm this is the right channel before publishing)</span>
+  </div>
+</footer>
+
+<script>
+  // ---------- Flip cards: the three facts ----------
+  const flipItems = [
+    {tag:'Scope', name:'Pause vs. Remove', text:'Pause freezes participation without deleting history — reversible. Remove takes the entrant or entry out of the contest entirely — far harder to undo. Default to Pause when in doubt.'},
+    {tag:'Visibility', name:'Missing Picks Flag', text:'A red number in the Missing picks column means that entrant still has at least one pick outstanding. The Missing picks filter pill jumps straight to everyone in that state.'},
+    {tag:'Granularity', name:'Per-Entry Control', text:'Pause and Remove apply to one specific entry, not automatically to every entry an entrant holds. Someone with two entries can have one paused while the other stays fully active.'}
+  ];
+  const flipGrid = document.getElementById('flipGrid');
+  flipItems.forEach(v=>{
+    const card = document.createElement('div');
+    card.className = 'flip-card';
+    card.innerHTML = `<div class="flip-inner">
+        <div class="flip-face flip-front">
+          <div><div class="tag">${v.tag}</div><div class="vname">${v.name}</div></div>
+          <div class="flip-hint">Tap to read →</div>
+        </div>
+        <div class="flip-face flip-back"><p>${v.text}</p></div>
+      </div>`;
+    card.addEventListener('click', ()=>card.classList.toggle('flipped'));
+    flipGrid.appendChild(card);
+  });
+
+  // ---------- Stage selector: Making a pick for a member ----------
+  const stages = [
+    {n:'01', name:'Open', detail:'From the Entrants tab, the commissioner clicks into the entrant to open that person\'s Manage entries screen.'},
+    {n:'02', name:'Locate', detail:'They find the specific entry and week that needs a pick — remember, an entrant can hold more than one entry.'},
+    {n:'03', name:'Submit', detail:'They click Make Picks for that entry/week and select the pick exactly as the entrant would have.'},
+    {n:'04', name:'Save', detail:'Saving locks the pick the same way a self-submitted pick would. The action is logged in Activity → Pick changes, so there\'s always a record of who actually made the call.'}
+  ];
+  const stageBar = document.getElementById('stageBar');
+  const stageDetail = document.getElementById('stageDetail');
+  function renderStage(active){
+    stageBar.innerHTML = '';
+    stages.forEach((s,i)=>{
+      const el = document.createElement('div');
+      el.className = 'journey-stage' + (i===active ? ' active' : '');
+      el.innerHTML = `<div class="jnum">${s.n}</div><div class="jname">${s.name}</div>`;
+      el.addEventListener('click', ()=>renderStage(i));
+      stageBar.appendChild(el);
+    });
+    stageDetail.innerHTML = stages[active].detail;
+  }
+  renderStage(0);
+
+  // ---------- Key facts & rules cheat sheet ----------
+  const cheatSheet = [
+    ['Paid checkbox', 'Set manually by the commissioner. Splash doesn\'t auto-confirm payment for Entertainment-Only contests, so this is a tracking step, not a payment processor confirmation.'],
+    ['Notes field', 'Internal only — entrants never see what a commissioner writes here. Safe to describe as private commissioner notes (e.g. "Venmo pending").'],
+    ['Missing picks (red count)', 'Flags any entrant with at least one outstanding pick. Filters and clears automatically as picks lock in.'],
+    ['Pick log', 'Shows only already-locked picks by week/slate — never live or future picks. Use it to settle "did they actually submit it" disputes without exposing anyone\'s in-progress strategy.'],
+    ['"Hide future picks from commissioner" setting', 'When on, the commissioner sees only the current week, same as everyone else — they can\'t view or set upcoming picks in advance. This is expected behavior, not a bug, if a commissioner reports it.'],
+    ['Activity → Pick changes', 'A filtered sub-tab of Activity showing only the picks a commissioner entered on an entrant\'s behalf — the fastest way to confirm who actually made a disputed pick.'],
+    ['Download button', 'Exports the full roster from the Entrants tab — useful for offline record-keeping or reconciling payments outside Splash.']
+  ];
+  const cheatSheetRows = document.getElementById('cheatSheetRows');
+  cheatSheet.forEach(([rule,detail])=>{
+    const el = document.createElement('div');
+    el.className = 'ref-row';
+    el.innerHTML = `<div class="ref-cell label">${rule}</div><div class="ref-cell desc">${detail}</div>`;
+    cheatSheetRows.appendChild(el);
+  });
+
+  // ---------- Filter pills quick reference ----------
+  const filterPills = [
+    ['All', 'Every entrant, regardless of status'],
+    ['Active', 'Entrants currently in the contest, not paused or removed'],
+    ['Missing picks', 'Entrants with at least one outstanding pick'],
+    ['Removed', 'Entrants taken out of the contest entirely'],
+    ['Paused', 'Entrants or entries temporarily frozen, not deleted'],
+    ['Notes', 'Entrants who have an internal note on file'],
+    ['No notes', 'Entrants with no note added yet'],
+    ['Paid', 'Entrants marked paid via the Paid checkbox'],
+    ['Unpaid', 'Entrants not yet marked paid']
+  ];
+  const filterPillRows = document.getElementById('filterPillRows');
+  filterPills.forEach(([pill,desc])=>{
+    const el = document.createElement('div');
+    el.className = 'ref-row';
+    el.innerHTML = `<div class="ref-cell label">${pill}</div><div class="ref-cell desc">${desc}</div>`;
+    filterPillRows.appendChild(el);
+  });
+
+  // ---------- Who's involved ----------
+  const roster = [
+    ['Commissioner', 'Owns the Entrants Manager — tracks payment, messages entrants, pauses/removes entrants or entries, and can submit picks on a member\'s behalf.'],
+    ['Entrant', 'Joins the contest, submits their own picks, and can hold more than one entry — each entry is controlled independently.'],
+    ['CS', 'Guides commissioners to the right tab/action, and checks Pick log or Activity → Pick changes to settle disputes about who submitted a given pick.']
+  ];
+  const rosterRows = document.getElementById('rosterRows');
+  roster.forEach(([role,desc])=>{
+    const el = document.createElement('div');
+    el.className = 'ref-row';
+    el.innerHTML = `<div class="ref-cell label">${role}</div><div class="ref-cell desc">${desc}</div>`;
+    rosterRows.appendChild(el);
+  });
+
+  // ---------- Generic accordion builder ----------
+  function buildAccordion(containerId, items, indent){
+    const container = document.getElementById(containerId);
+    items.forEach(it=>{
+      const item = document.createElement('div');
+      item.className = 'accordion-item';
+      item.innerHTML = `
+        <div class="accordion-head">
+          <div class="ah-left">${it.badge ? `<div class="badge-sm">${it.badge}</div>` : ''}<div class="accordion-title">${it.title}</div></div>
+          <div class="accordion-arrow">⌄</div>
+        </div>
+        <div class="accordion-body"><div class="accordion-body-inner" style="padding-left:${indent}px;">${it.text}</div></div>`;
+      item.querySelector('.accordion-head').addEventListener('click', ()=>item.classList.toggle('open'));
+      container.appendChild(item);
+    });
+  }
+  buildAccordion('faqAccordion', [
+    {title:'Do commissioners have to manually mark entrants as paid?', text:'Yes — the Paid checkbox on the Entrants tab is set by the commissioner. Splash doesn\'t process contest fees for them in an Entertainment-Only contest, so this is a manual tracking step, not an automated payment confirmation.'},
+    {title:'What\'s the difference between Pause and Remove?', text:'Pause freezes an entry or entrant without deleting their history — reversible, and the safer default for temporary situations. Remove takes them out of the contest entirely. If a commissioner isn\'t sure which to use, recommend Pause.'},
+    {title:'Can a commissioner pause just one of an entrant\'s entries?', text:'Yes. From the entrant\'s Manage entries screen, Pause and Remove are available per entry via the three-dot menu, so one entry can be acted on without touching any others that same person holds.'},
+    {title:'How does a commissioner email only entrants who haven\'t made their picks yet?', text:'Filter the Entrants tab to Missing picks, select the entrants, then choose Email from the bulk action bar — or go straight to the Email entrants tab and choose the Missing picks (N) recipient group.'},
+    {title:'Can entrants see the notes a commissioner adds?', text:'No. The Notes field on the Entrants tab is for the commissioner\'s own reference only — entrants can\'t view it. Safe to reassure commissioners this is private.'},
+    {title:'What does Pick log show that the Entrants tab doesn\'t?', text:'Pick log shows each entrant\'s already-locked picks by week or slate, used to settle disputes about whether a pick was actually submitted. It never shows live or future/in-progress picks, so it can\'t be used to preview anyone\'s upcoming strategy early.'},
+    {title:'Can a commissioner export their entrant roster?', text:'Yes — the Download button on the Entrants tab exports the full list, useful for offline record-keeping or reconciling payments outside of Splash.'},
+    {title:'How does a commissioner submit a pick on behalf of a member?', text:'From that entrant\'s Manage entries screen, they click Make Picks for the relevant entry/week and select the pick exactly as the entrant would — see Path 1 above for the full walkthrough. Every commissioner-submitted pick is logged in Activity → Pick changes.'}
+  ], 16);
+</script>
+
+</body>
+</html>
