@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invites Manager — CS Training Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#2FD1D9;
+    --accent-deep:#0B6E73;
+    --accent-tint:#E5FAFB;
+    --black:#1A1A1A;
+
+    --ink:var(--black);
+    --muted:#6B6B6B;
+    --line:#E4E4E4;
+    --line-strong:#CFCFCF;
+    --panel:#F5F5F5;
+    --white:#FFFFFF;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--white); color:var(--ink); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3{ font-family:'Oswald', sans-serif; letter-spacing:0.02em; }
+  a{ color:var(--accent-deep); }
+
+  .scoreboard{ position:sticky; top:0; z-index:50; background:var(--white); border-bottom:1px solid var(--line); padding:20px 32px 20px; }
+  .scoreboard-top{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px; max-width:1080px; margin:0 auto; }
+  .brand-eyebrow{ font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent-deep); margin:0 0 6px; font-weight:600; }
+  .brand-title{ font-size:30px; font-weight:600; margin:0; color:var(--ink); }
+  .brand-sub{ font-size:13px; color:var(--muted); margin:4px 0 0; }
+  .stat-strip{ display:flex; gap:22px; }
+  .stat{ text-align:right; }
+  .stat-num{ font-family:'Oswald',sans-serif; font-size:22px; font-weight:600; color:var(--black); line-height:1; }
+  .stat-label{ font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+
+  main{ max-width:1080px; margin:0 auto; padding:36px 32px 80px; }
+  .section-head{ display:flex; align-items:baseline; gap:12px; margin:0 0 6px; }
+  .section-num{ font-family:'JetBrains Mono',monospace; color:var(--accent-deep); font-size:13px; }
+  .section-title{ font-size:24px; font-weight:600; margin:0; }
+  .section-intro{ color:var(--muted); font-size:14.5px; line-height:1.65; max-width:680px; margin:0 0 34px; }
+
+  h3.block-title{ font-size:15px; font-weight:600; color:var(--ink); margin:44px 0 16px; letter-spacing:0.03em; text-transform:uppercase; }
+  h3.block-title:not(:first-of-type){ border-top:1px solid var(--line); padding-top:28px; }
+
+  .pillars{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:40px; }
+  .pillar{ background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+  .pillar-name{ font-family:'Oswald',sans-serif; font-size:14px; font-weight:600; color:var(--black); margin:0 0 6px; }
+  .pillar-text{ font-size:12.5px; color:var(--muted); line-height:1.5; margin:0; }
+
+  .value-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:40px; }
+  .flip-card{ perspective:1000px; height:150px; cursor:pointer; }
+  .flip-inner{ position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flip-card.flipped .flip-inner{ transform:rotateY(180deg); }
+  .flip-face{ position:absolute; inset:0; backface-visibility:hidden; border-radius:10px; padding:16px; border:1px solid var(--line); }
+  .flip-front{ background:var(--white); display:flex; flex-direction:column; justify-content:space-between; }
+  .flip-back{ background:var(--accent-tint); border-color:var(--accent); transform:rotateY(180deg); display:flex; align-items:center; }
+  .flip-front .tag{ font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--accent-deep); text-transform:uppercase; letter-spacing:.06em; }
+  .flip-front .vname{ font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; color:var(--ink); }
+  .flip-hint{ font-size:10px; color:var(--muted); }
+  .flip-back p{ font-size:12.5px; line-height:1.55; color:var(--black); margin:0; }
+
+  .journey{ display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+  .journey-stage{ flex:1; min-width:130px; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 14px; cursor:pointer; }
+  .journey-stage.active{ border-color:var(--accent); background:var(--accent-tint); }
+  .journey-stage .jnum{ font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent-deep); }
+  .journey-stage .jname{ font-size:13px; font-weight:600; margin-top:4px; color:var(--ink); }
+  .journey-detail{ background:var(--accent-tint); border:1px solid var(--accent); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:16px 18px; margin:10px 0 40px; font-size:13px; color:var(--accent-deep); line-height:1.6; }
+
+  .standards-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+  .std-card{ background:var(--accent-tint); border:1px solid var(--line); border-radius:10px; padding:14px 16px; text-align:center; }
+  .std-num{ font-family:'Oswald',sans-serif; font-size:26px; font-weight:600; color:var(--black); }
+  .std-label{ font-size:10.5px; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:.04em; }
+
+  .path-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:40px; }
+  .path-card{ background:var(--white); border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
+  .path-card .path-tag{ font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent-deep); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; display:inline-block; background:var(--accent-tint); padding:3px 8px; border-radius:5px; }
+  .path-card p{ font-size:13px; color:var(--muted); line-height:1.6; margin:0; }
+  .path-card p b{ color:var(--ink); }
+
+  .ref-table{ border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:18px; }
+  .ref-head{ display:grid; background:var(--black); }
+  .ref-head span{ padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--white); }
+  .ref-row{ display:grid; }
+  .ref-row + .ref-row{ border-top:1px solid var(--line); }
+  .ref-cell{ padding:12px 14px; font-size:12.5px; line-height:1.55; }
+  .ref-cell.label{ color:var(--ink); font-weight:600; }
+  .ref-cell.desc{ color:var(--muted); }
+  .ref-table.cols-1-2 .ref-head, .ref-table.cols-1-2 .ref-row{ grid-template-columns:1fr 2.2fr; }
+  .ref-table.cols-1-1 .ref-head, .ref-table.cols-1-1 .ref-row{ grid-template-columns:1fr 1fr; }
+
+  .banner{ border-radius:10px; padding:18px 20px; margin-bottom:20px; border:1px solid; }
+  .banner.strong{ background:var(--panel); border-color:var(--black); }
+  .banner.soft{ background:var(--accent-tint); border-color:var(--accent); }
+  .banner .b-eyebrow{ font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; }
+  .banner.strong .b-eyebrow{ color:var(--black); }
+  .banner.soft .b-eyebrow{ color:var(--accent-deep); }
+  .banner p{ font-size:14.5px; font-weight:500; margin:0; color:var(--ink); line-height:1.55; }
+
+  .accordion-item{ border:1px solid var(--line); border-radius:8px; margin-bottom:8px; overflow:hidden; background:var(--white); }
+  .accordion-head{ display:flex; align-items:center; justify-content:space-between; padding:13px 16px; cursor:pointer; }
+  .accordion-head .ah-left{ display:flex; align-items:center; gap:10px; }
+  .accordion-title{ font-size:13.5px; font-weight:500; color:var(--ink); }
+  .accordion-arrow{ color:var(--muted); font-size:11px; transition:transform .2s; }
+  .accordion-item.open .accordion-arrow{ transform:rotate(180deg); }
+  .accordion-body{ max-height:0; overflow:hidden; transition:max-height .3s ease; }
+  .accordion-item.open .accordion-body{ max-height:340px; }
+  .accordion-body-inner{ padding:0 16px 16px 16px; font-size:12.5px; color:var(--muted); line-height:1.6; }
+
+  .fine-print{ font-size:11.5px; color:var(--muted); font-style:italic; margin:0 0 30px; }
+
+  footer{ border-top:1px solid var(--line); padding:26px 32px; max-width:1080px; margin:0 auto; }
+  .foot-grid{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:12.5px; color:var(--muted); }
+
+  @media (max-width:760px){
+    .stat-strip{ display:none; }
+    .pillars, .value-grid, .path-grid{ grid-template-columns:repeat(1,1fr); }
+    .standards-grid{ grid-template-columns:repeat(1,1fr); }
+    .journey{ flex-direction:column; }
+    .ref-table.cols-1-2 .ref-head, .ref-table.cols-1-2 .ref-row,
+    .ref-table.cols-1-1 .ref-head, .ref-table.cols-1-1 .ref-row{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scoreboard">
+  <div class="scoreboard-top">
+    <div>
+      <p class="brand-eyebrow">Splash Sports · Customer Support Enablement</p>
+      <h1 class="brand-title">Invites Manager — CS Training Guide</h1>
+      <p class="brand-sub">Everything support needs to help commissioners get people into their contest — links, imports, past entrants, followers, and tracking who's already invited.</p>
+    </div>
+    <div class="stat-strip">
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Invite methods</div></div>
+      <div class="stat"><div class="stat-num">250</div><div class="stat-label">Emails per import</div></div>
+      <div class="stat"><div class="stat-num">0</div><div class="stat-label">Auto-carryover between contests</div></div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <section id="panel-0">
+    <div class="section-head"><span class="section-num">01</span><h2 class="section-title">Invites Manager Basics</h2></div>
+    <p class="section-intro">The 30-second version: Invites Manager is where a commissioner brings people into their contest — inside the Commissioner Console, right next to Entrants Manager. It has two tabs, New invite and Sent, and four distinct ways to build an invite list. A contest is only as good as its roster, so this is one of the highest-leverage screens a commissioner touches before a contest locks.</p>
+
+    <div class="pillars">
+      <div class="pillar"><p class="pillar-name">Share link</p><p class="pillar-text">A public join link to post anywhere — group chat, social, email.</p></div>
+      <div class="pillar"><p class="pillar-name">Import emails</p><p class="pillar-text">Paste a known list of contacts, up to 250 per import.</p></div>
+      <div class="pillar"><p class="pillar-name">Previous Splash entrants</p><p class="pillar-text">Pull in returning players from the commissioner's past contests.</p></div>
+      <div class="pillar"><p class="pillar-name">Followers</p><p class="pillar-text">Select from people who already follow the commissioner on Splash.</p></div>
+    </div>
+
+    <h3 class="block-title">The three facts that drive every ticket — tap a card</h3>
+    <div class="value-grid" id="flipGrid"></div>
+
+    <h3 class="block-title">Path 1 — Building and sending an invite</h3>
+    <div class="journey" id="stageBar"></div>
+    <div class="journey-detail" id="stageDetail"></div>
+
+    <h3 class="block-title">Path 2 — Two ways to grab the join link</h3>
+    <div class="path-grid">
+      <div class="path-card">
+        <span class="path-tag">Share link (in-flow)</span>
+        <p>From "Add to invite," clicking <b>Share link</b> displays the join URL directly on the page, with its own <b>Copy invite link</b> button right below it.</p>
+      </div>
+      <div class="path-card">
+        <span class="path-tag">Copy invite link (shortcut)</span>
+        <p>A standalone <b>Copy invite link</b> button sits in the top-right corner of the whole Invites Manager page — same link, one click, no need to open the people-picker flow at all.</p>
+      </div>
+    </div>
+
+    <h3 class="block-title">Key numbers</h3>
+    <div class="standards-grid">
+      <div class="std-card"><div class="std-num">4</div><div class="std-label">Ways to add people to an invite</div></div>
+      <div class="std-card"><div class="std-num">250</div><div class="std-label">Emails per Import emails paste</div></div>
+      <div class="std-card"><div class="std-num">0</div><div class="std-label">Entrants carried over automatically</div></div>
+    </div>
+    <p class="fine-print">*Contests also have an overall max-entries cap (set in Contest settings) — the invite link itself doesn't add its own separate limit on top of that.</p>
+
+    <h3 class="block-title">Key facts &amp; rules cheat sheet</h3>
+    <p class="section-intro" style="margin-bottom:16px;">The details support teams will get asked about most.</p>
+    <div class="ref-table cols-1-2">
+      <div class="ref-head"><span>Item</span><span>Detail</span></div>
+      <div id="cheatSheetRows"></div>
+    </div>
+
+    <h3 class="block-title">Add-to-invite methods, side by side</h3>
+    <p class="section-intro" style="margin-bottom:16px;">Which method to recommend depends on who the commissioner is trying to reach.</p>
+    <div class="ref-table cols-1-2">
+      <div class="ref-head"><span>Method</span><span>Best for</span></div>
+      <div id="methodRows"></div>
+    </div>
+
+    <div class="banner soft" style="margin-top:18px;">
+      <div class="b-eyebrow">Don't assume last year's roster carries over</div>
+      <p>Splash never auto-migrates entrants between contests, even for a repeat annual pool with the same commissioner and group. If a commissioner asks why their old members aren't showing up, the answer is always: they need a fresh invite via Previous Splash entrants.</p>
+    </div>
+
+    <h3 class="block-title">Who's involved</h3>
+    <div class="ref-table cols-1-2">
+      <div class="ref-head"><span>Role</span><span>What they do</span></div>
+      <div id="rosterRows"></div>
+    </div>
+
+    <div class="banner strong">
+      <div class="b-eyebrow">The one rule that matters most</div>
+      <p>The invite link is public and uncapped by Invites Manager itself — anyone who has it can join, up to whatever max-entries limit the contest is set to. It is not a private, per-person list the way Import emails or Previous Splash entrants are.</p>
+    </div>
+
+    <h3 class="block-title">Rules for Invites Manager</h3>
+    <div id="faqAccordion"></div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot-grid">
+    <span>Key channel: #splash-commissioner-support (confirm this is the right channel before publishing)</span>
+  </div>
+</footer>
+
+<script>
+  // ---------- Flip cards: the three facts ----------
+  const flipItems = [
+    {tag:'Carryover', name:'No Auto Re-Invite', text:'Entrants never roll over from a past contest automatically. Every new contest — even a repeat annual pool — needs fresh invitations sent, no matter who played last time.'},
+    {tag:'Scope', name:'Link vs. List', text:'Share link / Copy invite link is public and open to anyone who has it. Import emails, Previous Splash entrants, and Followers are targeted — only the specific people selected get an invite.'},
+    {tag:'Batch Clear', name:'The Trash Icon', text:'In the Invite review panel, the trash icon clears the entire in-progress list at once — there is no per-batch undo, so double-check before using it on a combined list.'}
+  ];
+  const flipGrid = document.getElementById('flipGrid');
+  flipItems.forEach(v=>{
+    const card = document.createElement('div');
+    card.className = 'flip-card';
+    card.innerHTML = `<div class="flip-inner">
+        <div class="flip-face flip-front">
+          <div><div class="tag">${v.tag}</div><div class="vname">${v.name}</div></div>
+          <div class="flip-hint">Tap to read →</div>
+        </div>
+        <div class="flip-face flip-back"><p>${v.text}</p></div>
+      </div>`;
+    card.addEventListener('click', ()=>card.classList.toggle('flipped'));
+    flipGrid.appendChild(card);
+  });
+
+  // ---------- Stage selector: Building and sending an invite ----------
+  const stages = [
+    {n:'01', name:'Add', detail:'The commissioner adds people via one or more of the four methods — Share link, Import emails, Previous Splash entrants, or Followers — under "Add to invite."'},
+    {n:'02', name:'Review', detail:'Everyone added lands in the Invite panel on the right, where the commissioner can search, remove individuals with the x, or clear the whole list with the trash icon.'},
+    {n:'03', name:'Personalize', detail:'Optionally, they check "Add a custom message to the invite" to include a personal note alongside the standard invite text.'},
+    {n:'04', name:'Send', detail:'Clicking Send invite delivers to everyone currently in the list. Once sent, those people move to the Sent tab, which tracks every invite that has actually gone out.'}
+  ];
+  const stageBar = document.getElementById('stageBar');
+  const stageDetail = document.getElementById('stageDetail');
+  function renderStage(active){
+    stageBar.innerHTML = '';
+    stages.forEach((s,i)=>{
+      const el = document.createElement('div');
+      el.className = 'journey-stage' + (i===active ? ' active' : '');
+      el.innerHTML = `<div class="jnum">${s.n}</div><div class="jname">${s.name}</div>`;
+      el.addEventListener('click', ()=>renderStage(i));
+      stageBar.appendChild(el);
+    });
+    stageDetail.innerHTML = stages[active].detail;
+  }
+  renderStage(0);
+
+  // ---------- Key facts & rules cheat sheet ----------
+  const cheatSheet = [
+    ['Share link / Copy invite link', 'The same public join link, surfaced two ways — inline under "Share link," and as a one-click shortcut in the page\'s top-right corner. Anyone with the link can join, up to the contest\'s max entries.'],
+    ['Import emails', 'Paste or type up to 250 emails, separated by comma and/or space. Duplicates are automatically skipped. Commissioners needing more can request VIP status.'],
+    ['Previous Splash entrants', 'A searchable, paginated list of the commissioner\'s past contests. Checking a contest pulls in its entrants — the primary path for re-inviting an entire returning group.'],
+    ['Followers', 'People who already follow the commissioner on Splash, searchable and selectable individually.'],
+    ['Sent tab', 'Tracks everyone already invited, separate from the in-progress New invite list. First place to check if someone says they never got an invite.'],
+    ['Add a custom message', 'An optional checkbox in the Invite review panel that lets a commissioner include a personal note with the standard invite.'],
+    ['Trash icon (Invite panel)', 'Clears the entire in-progress invite list at once — no per-batch undo, so confirm before using on a combined list from multiple sources.']
+  ];
+  const cheatSheetRows = document.getElementById('cheatSheetRows');
+  cheatSheet.forEach(([rule,detail])=>{
+    const el = document.createElement('div');
+    el.className = 'ref-row';
+    el.innerHTML = `<div class="ref-cell label">${rule}</div><div class="ref-cell desc">${detail}</div>`;
+    cheatSheetRows.appendChild(el);
+  });
+
+  // ---------- Add-to-invite methods, side by side ----------
+  const methods = [
+    ['Share link', 'Broad, informal reach — group chats, social posts, anyone without a specific list'],
+    ['Import emails', 'A known set of contacts the commissioner already has email addresses for'],
+    ['Previous Splash entrants', 'Returning players from a contest the commissioner has run before'],
+    ['Followers', 'People already following the commissioner on Splash, without needing their email']
+  ];
+  const methodRows = document.getElementById('methodRows');
+  methods.forEach(([method,desc])=>{
+    const el = document.createElement('div');
+    el.className = 'ref-row';
+    el.innerHTML = `<div class="ref-cell label">${method}</div><div class="ref-cell desc">${desc}</div>`;
+    methodRows.appendChild(el);
+  });
+
+  // ---------- Who's involved ----------
+  const roster = [
+    ['Commissioner', 'Owns Invites Manager — builds the invite list from any combination of the four methods, reviews it, and sends.'],
+    ['Invitee / prospective entrant', 'Receives the invite (or finds the public link) and joins the contest, becoming an entrant once they do.'],
+    ['CS', 'Helps commissioners pick the right invite method for their audience, and checks the Sent tab first when someone reports a missing invite.']
+  ];
+  const rosterRows = document.getElementById('rosterRows');
+  roster.forEach(([role,desc])=>{
+    const el = document.createElement('div');
+    el.className = 'ref-row';
+    el.innerHTML = `<div class="ref-cell label">${role}</div><div class="ref-cell desc">${desc}</div>`;
+    rosterRows.appendChild(el);
+  });
+
+  // ---------- Generic accordion builder ----------
+  function buildAccordion(containerId, items, indent){
+    const container = document.getElementById(containerId);
+    items.forEach(it=>{
+      const item = document.createElement('div');
+      item.className = 'accordion-item';
+      item.innerHTML = `
+        <div class="accordion-head">
+          <div class="ah-left">${it.badge ? `<div class="badge-sm">${it.badge}</div>` : ''}<div class="accordion-title">${it.title}</div></div>
+          <div class="accordion-arrow">⌄</div>
+        </div>
+        <div class="accordion-body"><div class="accordion-body-inner" style="padding-left:${indent}px;">${it.text}</div></div>`;
+      item.querySelector('.accordion-head').addEventListener('click', ()=>item.classList.toggle('open'));
+      container.appendChild(item);
+    });
+  }
+  buildAccordion('faqAccordion', [
+    {title:'Do returning entrants need a new invite every season?', text:'Yes. Splash doesn\'t carry entrants over between contests automatically — every new contest needs fresh invitations, even for people who played last time. Previous Splash entrants is built specifically for this.'},
+    {title:'What\'s the difference between the top-right Copy invite link and the Share link option?', text:'They\'re the same link. Copy invite link is just a one-click shortcut in the header so a commissioner doesn\'t have to open the people-picker flow if all they want is the join link.'},
+    {title:'Is there a limit on how many people can join via the invite link?', text:'The link itself isn\'t capped by Invites Manager, but the contest\'s overall max entries (set in Contest settings) still applies — once full, no more entries can be added regardless of the invite method used.'},
+    {title:'How many emails can be imported at once?', text:'Up to 250 per import. Commissioners who regularly need more can request VIP status; duplicates within a paste are automatically skipped.'},
+    {title:'Can a commissioner combine multiple invite methods before sending?', text:'Yes — Share link, Import emails, Previous Splash entrants, and Followers all feed into the same Invite review panel, so a commissioner can mix sources before sending one combined invite.'},
+    {title:'How can a commissioner (or CS) tell if an invite actually went out?', text:'Check the Sent tab — it\'s the record of everyone already invited, separate from the in-progress New invite list. This is the first thing to check if someone reports never receiving an invite.'},
+    {title:'What happens if a commissioner clicks the trash icon in the Invite panel?', text:'It clears the entire in-progress invite list at once. There\'s no per-batch undo, so it\'s worth confirming the list first, especially if it combines people pulled in from more than one source.'}
+  ], 16);
+</script>
+
+</body>
+</html>
