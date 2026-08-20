@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Group Entry — CS Training Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     COLOR SYSTEM — replace these 4 values with your brand colors.
+     Everything else below references these, so a 4-value swap
+     re-themes the entire guide.
+     ============================================================ */
+  :root{
+    --accent:#4BEBE2;        /* 1. your brand's main accent color */
+    --accent-deep:#0B726C;   /* 2. a darkened version of it, for readable text/links/numbers on white */
+    --accent-tint:#E8FBFA;   /* 3. a very light tint of it, for card/badge backgrounds */
+    --black:#1A1A1A;         /* 4. your ink color — doesn't have to be pure black */
+
+    /* aliases used throughout the component CSS below — leave these as-is */
+    --ink:var(--black);
+    --muted:#6B6B6B;
+    --line:#E4E4E4;
+    --line-strong:#CFCFCF;
+    --panel:#F5F5F5;
+    --white:#FFFFFF;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--white); color:var(--ink); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3{ font-family:'Oswald', sans-serif; letter-spacing:0.02em; }
+  a{ color:var(--accent-deep); }
+
+  /* ---------- Sticky header: eyebrow / title / tagline / key stats ---------- */
+  .scoreboard{ position:sticky; top:0; z-index:50; background:var(--white); border-bottom:1px solid var(--line); padding:20px 32px 16px; }
+  .scoreboard-top{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px; max-width:1080px; margin:0 auto; }
+  .brand-eyebrow{ font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent-deep); margin:0 0 6px; font-weight:600; }
+  .brand-title{ font-size:30px; font-weight:600; margin:0; color:var(--ink); }
+  .brand-sub{ font-size:13px; color:var(--muted); margin:4px 0 0; }
+  .stat-strip{ display:flex; gap:22px; }
+  .stat{ text-align:right; }
+  .stat-num{ font-family:'Oswald',sans-serif; font-size:22px; font-weight:600; color:var(--black); line-height:1; }
+  .stat-label{ font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+
+  /* ---------- Progress bar + single-row scrollable tabs ---------- */
+  .rail{ max-width:1080px; margin:18px auto 0; }
+  .progress-track{ height:3px; background:var(--line); border-radius:2px; overflow:hidden; margin-bottom:14px; }
+  .progress-fill{ height:100%; width:0%; background:var(--black); transition:width .4s ease; }
+  .tabs{ display:flex; gap:6px; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; scrollbar-width:none; }
+  .tabs::-webkit-scrollbar{ display:none; }
+  .tab{ flex:0 0 auto; display:flex; align-items:center; gap:6px; white-space:nowrap; background:var(--white); border:1px solid var(--line); border-radius:20px; padding:7px 13px; cursor:pointer; color:var(--muted); font-family:'Inter',sans-serif; font-size:12px; transition:all .18s ease; }
+  .tab .tab-num{ font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent-deep); }
+  .tab.active{ background:var(--accent-tint); border-color:var(--accent-deep); color:var(--black); }
+  .tab.active .tab-num{ color:var(--accent-deep); }
+  .tab:hover:not(.active){ border-color:var(--line-strong); color:var(--ink); }
+  .tab-check{ color:var(--accent-deep); font-weight:600; opacity:0; transition:opacity .2s; }
+  .tab.visited .tab-check{ opacity:1; }
+
+  /* ---------- Main content + panels ---------- */
+  main{ max-width:1080px; margin:0 auto; padding:36px 32px 80px; }
+  .panel{ display:none; animation:fade .35s ease; }
+  .panel.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+  .section-head{ display:flex; align-items:baseline; gap:12px; margin:0 0 6px; }
+  .section-num{ font-family:'JetBrains Mono',monospace; color:var(--accent-deep); font-size:13px; }
+  .section-title{ font-size:24px; font-weight:600; margin:0; }
+  .section-intro{ color:var(--muted); font-size:14.5px; line-height:1.65; max-width:680px; margin:0 0 34px; }
+
+  /* h3 section headings get a divider line above them, except the first one in a panel */
+  h3.block-title{ font-size:15px; font-weight:600; color:var(--ink); margin:44px 0 16px; letter-spacing:0.03em; text-transform:uppercase; }
+  h3.block-title:not(:first-of-type){ border-top:1px solid var(--line); padding-top:28px; }
+
+  /* ---------- Component: simple 4-up label cards (e.g. pillars/principles) ---------- */
+  .pillars{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:40px; }
+  .pillar{ background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+  .pillar-name{ font-family:'Oswald',sans-serif; font-size:14px; font-weight:600; color:var(--black); margin:0 0 6px; }
+  .pillar-text{ font-size:12.5px; color:var(--muted); line-height:1.5; margin:0; }
+
+  /* ---------- Component: flip cards (front label, click to flip and reveal detail) ---------- */
+  .value-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:40px; }
+  .flip-card{ perspective:1000px; height:132px; cursor:pointer; }
+  .flip-inner{ position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flip-card.flipped .flip-inner{ transform:rotateY(180deg); }
+  .flip-face{ position:absolute; inset:0; backface-visibility:hidden; border-radius:10px; padding:16px; border:1px solid var(--line); }
+  .flip-front{ background:var(--white); display:flex; flex-direction:column; justify-content:space-between; }
+  .flip-back{ background:var(--accent-tint); border-color:var(--accent); transform:rotateY(180deg); display:flex; align-items:center; }
+  .flip-front .tag{ font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--accent-deep); text-transform:uppercase; letter-spacing:.06em; }
+  .flip-front .vname{ font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; color:var(--ink); }
+  .flip-hint{ font-size:10px; color:var(--muted); }
+  .flip-back p{ font-size:12.5px; line-height:1.55; color:var(--black); margin:0; }
+
+  /* ---------- Component: stage/step selector (e.g. a journey or process) ---------- */
+  .journey{ display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+  .journey-stage{ flex:1; min-width:130px; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px 14px; cursor:pointer; }
+  .journey-stage.active{ border-color:var(--accent); background:var(--accent-tint); }
+  .journey-stage .jnum{ font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent-deep); }
+  .journey-stage .jname{ font-size:13px; font-weight:600; margin-top:4px; color:var(--ink); }
+  .journey-detail{ background:var(--accent-tint); border:1px solid var(--accent); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:16px 18px; margin:10px 0 40px; font-size:13px; color:var(--accent-deep); line-height:1.6; }
+  .journey-detail ul{ margin:6px 0 0; padding-left:18px; }
+
+  /* ---------- Component: KPI / stat scoreboard cards ---------- */
+  .standards-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+  .std-card{ background:var(--accent-tint); border:1px solid var(--line); border-radius:10px; padding:14px 16px; text-align:center; }
+  .std-num{ font-family:'Oswald',sans-serif; font-size:26px; font-weight:600; color:var(--black); }
+  .std-label{ font-size:10.5px; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:.04em; }
+
+  /* ---------- Component: clickable horizontal bar chart (relative values, no exact numbers needed) ---------- */
+  .bar-row{ margin-bottom:12px; cursor:pointer; }
+  .bar-row-top{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:5px; }
+  .bar-topic{ font-size:13px; font-weight:600; color:var(--ink); }
+  .bar-track{ height:8px; background:var(--panel); border-radius:4px; overflow:hidden; }
+  .bar-fill{ height:100%; background:var(--accent-deep); border-radius:4px; }
+  .bar-detail{ display:none; background:var(--panel); border-left:3px solid var(--accent-deep); border-radius:0 8px 8px 0; padding:12px 16px; margin:8px 0 4px; font-size:12px; color:var(--muted); line-height:1.6; }
+  .bar-row.open .bar-detail{ display:block; }
+
+  /* ---------- Component: 2-column before/after or comparison table ---------- */
+  .compare-table{ border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:18px; }
+  .compare-row{ display:grid; grid-template-columns:1fr 34px 1fr; align-items:stretch; }
+  .compare-row + .compare-row{ border-top:1px solid var(--line); }
+  .compare-cell{ padding:12px 16px; font-size:12.5px; line-height:1.5; }
+  .compare-cell.before{ color:var(--muted); background:var(--white); }
+  .compare-cell.after{ color:var(--white); background:var(--accent-deep); font-weight:500; }
+  .compare-arrow{ display:flex; align-items:center; justify-content:center; background:var(--black); color:var(--white); font-size:15px; font-weight:600; }
+  .compare-head{ display:grid; grid-template-columns:1fr 34px 1fr; background:var(--black); }
+  .compare-head span{ padding:10px 16px; font-family:'JetBrains Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--white); }
+  .compare-head .compare-arrow{ background:var(--black); }
+
+  /* ---------- Component: 3-column status table (standard / current state / status pill) ---------- */
+  .status-table{ border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:18px; }
+  .status-head{ display:grid; grid-template-columns:1.1fr 1.6fr 110px; background:var(--black); }
+  .status-head span{ padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--white); }
+  .status-row{ display:grid; grid-template-columns:1.1fr 1.6fr 110px; align-items:center; }
+  .status-row + .status-row{ border-top:1px solid var(--line); }
+  .status-cell{ padding:12px 14px; font-size:12.5px; line-height:1.5; }
+  .status-cell.label{ color:var(--ink); font-weight:500; }
+  .status-cell.desc{ color:var(--muted); }
+  .status-pill{ display:inline-block; padding:4px 10px; border-radius:12px; font-size:10.5px; font-weight:600; white-space:nowrap; }
+  .status-pill.good{ background:var(--accent-tint); color:var(--accent-deep); }
+  .status-pill.pending{ background:var(--panel); color:var(--muted); border:1px solid var(--line-strong); }
+
+  /* ---------- Component: tap-to-expand cards (e.g. roster/roles — short teaser, click for full detail) ---------- */
+  .expand-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:14px; margin-bottom:38px; }
+  .expand-card{ background:var(--white); border:1px solid var(--line); border-radius:10px; padding:16px; cursor:pointer; }
+  .expand-card-top{ display:flex; justify-content:space-between; align-items:flex-start; }
+  .badge{ display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; background:var(--accent-tint); border:1px solid var(--accent); color:var(--accent-deep); font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; margin-bottom:10px; }
+  .badge-sm{ display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--accent-tint); border:1px solid var(--accent); color:var(--accent-deep); font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; }
+  .expand-arrow{ color:var(--muted); font-size:11px; transition:transform .2s; margin-top:6px; }
+  .expand-card.open .expand-arrow{ transform:rotate(180deg); }
+  .expand-name{ font-size:14.5px; font-weight:600; margin:0 0 4px; color:var(--ink); }
+  .expand-teaser{ font-size:12.5px; color:var(--muted); line-height:1.55; margin:0 0 10px; }
+  .expand-full{ max-height:0; overflow:hidden; transition:max-height .3s ease; }
+  .expand-card.open .expand-full{ max-height:400px; }
+  .expand-full-inner{ font-size:12.5px; color:var(--muted); line-height:1.6; padding-bottom:10px; }
+  .expand-full-inner b{ color:var(--ink); }
+  .expand-tag{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--accent-deep); background:var(--accent-tint); display:inline-block; padding:3px 8px; border-radius:5px; }
+
+  /* ---------- Component: segmented selector (click an option, see the matching result below) ---------- */
+  .selector-wrap{ background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px; margin-bottom:40px; }
+  .selector-buttons{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  .selector-btn{ background:var(--white); border:1px solid var(--line); color:var(--muted); font-size:12.5px; padding:8px 14px; border-radius:20px; cursor:pointer; font-family:'Inter',sans-serif; }
+  .selector-btn.active{ background:var(--panel); border-color:var(--black); color:var(--black); }
+  .selector-result{ font-size:13px; color:var(--muted); line-height:1.6; border-top:1px solid var(--line); padding-top:14px; }
+  .selector-result b{ color:var(--ink); }
+
+  /* ---------- Component: banner callouts. Use "strong" for the one critical rule, "soft" for informational ones ---------- */
+  .banner{ border-radius:10px; padding:18px 20px; margin-bottom:20px; border:1px solid; }
+  .banner.strong{ background:var(--panel); border-color:var(--black); }
+  .banner.soft{ background:var(--accent-tint); border-color:var(--accent); }
+  .banner .b-eyebrow{ font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; }
+  .banner.strong .b-eyebrow{ color:var(--black); }
+  .banner.soft .b-eyebrow{ color:var(--accent-deep); }
+  .banner p{ font-size:14.5px; font-weight:500; margin:0; color:var(--ink); line-height:1.55; }
+
+  /* ---------- Component: accordion (click to expand — use for lists of principles/tips/skills) ---------- */
+  .accordion-item{ border:1px solid var(--line); border-radius:8px; margin-bottom:8px; overflow:hidden; background:var(--white); }
+  .accordion-head{ display:flex; align-items:center; justify-content:space-between; padding:13px 16px; cursor:pointer; }
+  .accordion-head .ah-left{ display:flex; align-items:center; gap:10px; }
+  .accordion-title{ font-size:13.5px; font-weight:500; color:var(--ink); }
+  .accordion-arrow{ color:var(--muted); font-size:11px; transition:transform .2s; }
+  .accordion-item.open .accordion-arrow{ transform:rotate(180deg); }
+  .accordion-body{ max-height:0; overflow:hidden; transition:max-height .3s ease; }
+  .accordion-item.open .accordion-body{ max-height:300px; }
+  .accordion-body-inner{ padding:0 16px 16px 16px; font-size:12.5px; color:var(--muted); line-height:1.6; }
+
+  /* ---------- Component: small tag/badge grid (e.g. channel or contact directory) ---------- */
+  .tag-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:36px; }
+  .tag-card{ background:var(--white); border:1px solid var(--line); border-radius:8px; padding:12px 14px; display:flex; gap:12px; align-items:flex-start; }
+  .tag-name{ font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--accent-deep); background:var(--accent-tint); padding:4px 8px; border-radius:5px; white-space:nowrap; flex-shrink:0; }
+  .tag-desc{ font-size:12px; color:var(--muted); line-height:1.5; }
+  .fine-print{ font-size:11.5px; color:var(--muted); font-style:italic; margin:0 0 30px; }
+
+  /* ---------- Component: resource/source link list ---------- */
+  .resource-list{ list-style:none; padding:0; margin:0 0 10px; }
+  .resource-list li{ border:1px solid var(--line); border-radius:8px; padding:12px 16px; margin-bottom:8px; }
+  .resource-list a{ font-size:13.5px; font-weight:500; text-decoration:none; }
+  .resource-list a:hover{ text-decoration:underline; }
+  .resource-list p{ font-size:12px; color:var(--muted); margin:4px 0 0; }
+
+  footer{ border-top:1px solid var(--line); padding:26px 32px; max-width:1080px; margin:0 auto; }
+  .foot-grid{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:12.5px; color:var(--muted); }
+  .foot-grid a{ color:var(--muted); text-decoration:none; border-bottom:1px dotted var(--muted); }
+  .foot-grid a:hover{ color:var(--accent-deep); border-color:var(--accent-deep); }
+
+  @media (max-width:760px){
+    .stat-strip{ display:none; }
+    .pillars, .value-grid, .expand-grid, .tag-grid{ grid-template-columns:repeat(1,1fr); }
+    .standards-grid{ grid-template-columns:repeat(2,1fr); }
+    .journey{ flex-direction:column; }
+    .status-head, .status-row{ grid-template-columns:1fr; }
+    .compare-head, .compare-row{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scoreboard">
+  <div class="scoreboard-top">
+    <div>
+      <p class="brand-eyebrow">Splash · CS Training Guide</p>
+      <h1 class="brand-title">Group Entry</h1>
+      <p class="brand-sub">Split a contest entry with friends, own your share, get paid automatically — internally "Split Entries"</p>
+    </div>
+    <div class="stat-strip">
+      <div class="stat"><div class="stat-num">Aug 17</div><div class="stat-label">Target launch</div></div>
+      <div class="stat"><div class="stat-num">10</div><div class="stat-label">Max owners</div></div>
+      <div class="stat"><div class="stat-num">$0</div><div class="stat-label">Platform fee</div></div>
+    </div>
+  </div>
+
+  <div class="rail">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="tabs">
+      <button class="tab active" data-panel="0"><span class="tab-num">Part 1</span>The Pitch<span class="tab-check">✓</span></button>
+      <button class="tab" data-panel="1"><span class="tab-num">Part 2</span>Roles & Rules<span class="tab-check">✓</span></button>
+      <button class="tab" data-panel="2"><span class="tab-num">Part 3</span>Guardrails<span class="tab-check">✓</span></button>
+      <button class="tab" data-panel="3"><span class="tab-num">Part 4</span>Resources<span class="tab-check">✓</span></button>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- ============ PANEL 1 — one example of each component ============ -->
+  <section class="panel active" id="panel-0">
+    <div class="section-head"><span class="section-num">01</span><h2 class="section-title">The Pitch</h2></div>
+    <p class="section-intro">Group Entry lets one player enter a contest and invite specific friends to buy in and own a share of that same entry — all directly on Splash. Ownership and payouts are handled natively on the platform, with zero platform fees on the split.</p>
+
+    <!-- 4-up label cards -->
+    <div class="pillars">
+      <div class="pillar"><p class="pillar-name">Internal Name</p><p class="pillar-text">Split Entries</p></div>
+      <div class="pillar"><p class="pillar-name">Target Launch</p><p class="pillar-text">August 17, 2026</p></div>
+      <div class="pillar"><p class="pillar-name">Platforms</p><p class="pillar-text">Web, iOS, Android</p></div>
+      <div class="pillar"><p class="pillar-name">Max Group Size</p><p class="pillar-text">10 owners total (organizer + up to 9 friends)</p></div>
+    </div>
+
+    <h3 class="block-title">Headline Benefits — tap a card</h3>
+    <div class="value-grid" id="flipGrid"></div>
+
+    <h3 class="block-title">How It Works — select a step</h3>
+    <div class="journey" id="stageBar"></div>
+    <div class="journey-detail" id="stageDetail"></div>
+    <p class="fine-print" style="margin-top:-2px;">Reminder: users must already have a Splash account to be invited into a Group Entry.</p>
+
+    <h3 class="block-title">Simple Example</h3>
+    <div class="standards-grid">
+      <div class="std-card"><div class="std-num">$1,000</div><div class="std-label">Example entry fee</div></div>
+      <div class="std-card"><div class="std-num">4</div><div class="std-label">Co-owners in this example</div></div>
+      <div class="std-card"><div class="std-num">25%</div><div class="std-label">Each owner's share</div></div>
+      <div class="std-card"><div class="std-num">$250</div><div class="std-label">Each owner pays</div></div>
+    </div>
+    <p class="fine-print">If this entry won $21M, each 25% co-owner would automatically be paid $5,250,000 — no settling up off-platform required.</p>
+
+    <h3 class="block-title">Uneven Split Example — tap an owner</h3>
+    <div id="barChart"></div>
+
+    <h3 class="block-title">The Old Way vs. Group Entry</h3>
+    <div class="compare-table">
+      <div class="compare-head"><span>Before</span><span class="compare-arrow">→</span><span>After</span></div>
+      <div id="compareRows"></div>
+    </div>
+
+    <div class="banner soft" style="margin-top:18px;">
+      <div class="b-eyebrow">Pricing is fixed</div>
+      <p>Every co-owner pays their exact pro-rata share — there's no discounted price and it can't be edited down. A 20% share of a $1,000 entry always costs $200.</p>
+    </div>
+
+    <h3 class="block-title">Eligibility Checklist</h3>
+    <div class="status-table">
+      <div class="status-head"><span>Requirement</span><span>What it means</span><span>Status</span></div>
+      <div id="statusRows"></div>
+    </div>
+
+    <h3 class="block-title">Why Players Will Care</h3>
+    <div id="listAccordion"></div>
+  </section>
+
+  <!-- ============ PANEL 2 — roles/structure pattern ============ -->
+  <section class="panel" id="panel-1">
+    <div class="section-head"><span class="section-num">02</span><h2 class="section-title">Roles & Rules</h2></div>
+    <p class="section-intro">Who does what inside a Group Entry, and the one rule that trumps everything else.</p>
+
+    <h3 class="block-title">Who's Who — tap a role</h3>
+    <div class="expand-grid" id="rosterGrid"></div>
+
+    <div class="banner strong">
+      <div class="b-eyebrow">The one rule to remember</div>
+      <p>Splitting only happens before the contest's first pick locks. Group Entry is a pre-contest setup tool — it can never be started or edited once the contest is underway.</p>
+    </div>
+
+    <h3 class="block-title">Common Scenarios — pick one</h3>
+    <div class="selector-wrap">
+      <div class="selector-buttons" id="selectorButtons"></div>
+      <div class="selector-result" id="selectorResult"></div>
+    </div>
+  </section>
+
+  <!-- ============ PANEL 3 — simple accordion-only pattern ============ -->
+  <section class="panel" id="panel-2">
+    <div class="section-head"><span class="section-num">03</span><h2 class="section-title">Guardrails for CS</h2></div>
+    <p class="section-intro">The fine print — so we don't overpromise, and so you've got the answer ready when a player asks "wait, can I...?"</p>
+    <div id="secondAccordion"></div>
+  </section>
+
+  <!-- ============ PANEL 4 — always end on Channels & Resources ============ -->
+  <section class="panel" id="panel-3">
+    <div class="section-head"><span class="section-num">04</span><h2 class="section-title">Channels & resources</h2></div>
+    <p class="section-intro">Where Group Entry shows up in-app.</p>
+
+    <h3 class="block-title">Where It Shows Up In-App</h3>
+    <div class="tag-grid" id="tagGrid"></div>
+    <p class="fine-print">Only the accept flow and the design labeled "Current Gamecenter" in Figma are current — other flows in that file may be outdated.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot-grid">
+    <span>Source: Group Entry feature brief · Internal name "Split Entries"</span>
+    <span>Target launch: August 17, 2026 · Web, iOS, Android</span>
+  </div>
+</footer>
+
+<script>
+  // ---------- Tabs ----------
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+  const visited = new Set([0]);
+  function showPanel(i){
+    tabs.forEach((t,idx)=>t.classList.toggle('active', idx===i));
+    panels.forEach((p,idx)=>p.classList.toggle('active', idx===i));
+    visited.add(i);
+    tabs.forEach((t,idx)=>t.classList.toggle('visited', visited.has(idx)));
+    document.getElementById('progressFill').style.width = (visited.size/tabs.length*100)+'%';
+  }
+  tabs.forEach((t,i)=>t.addEventListener('click', ()=>showPanel(i)));
+
+  // ---------- Flip cards ----------
+  const flipItems = [
+    {tag:'Fees', name:'$0 Fee', text:'No platform fee on the split — friends pay only their true share of the entry.'},
+    {tag:'Platform', name:"It's All On-Platform", text:'Ownership and payouts live natively on Splash — no outside apps or cash transfers needed.'},
+    {tag:'Payouts', name:'No Settling Up', text:"Everyone's cut is paid out automatically based on their ownership share."},
+    {tag:'Group size', name:'Up to 10-Way', text:'Split with up to 9 friends (10 owners total) on a single entry.'}
+  ];
+  const flipGrid = document.getElementById('flipGrid');
+  flipItems.forEach(v=>{
+    const card = document.createElement('div');
+    card.className = 'flip-card';
+    card.innerHTML = `<div class="flip-inner">
+        <div class="flip-face flip-front">
+          <div><div class="tag">${v.tag}</div><div class="vname">${v.name}</div></div>
+          <div class="flip-hint">Tap to read →</div>
+        </div>
+        <div class="flip-face flip-back"><p>${v.text}</p></div>
+      </div>`;
+    card.addEventListener('click', ()=>card.classList.toggle('flipped'));
+    flipGrid.appendChild(card);
+  });
+
+  // ---------- Stage/step selector ----------
+  const stages = [
+    {n:'01', name:'Enter', detail:'One player enters the contest and pays the full entry fee.'},
+    {n:'02', name:'Split', detail:'From the entry screen, the organizer taps "Group Entry" to start a split.'},
+    {n:'03', name:'Invite', detail:"Add friends by username, set each person's share, and decide who controls the picks — keep it yourself or hand it to one co-owner."},
+    {n:'04', name:'Accept & Pay', detail:'Each invited friend gets an email + in-app notification, reviews their exact share and price, and pays their pro-rata amount on-platform.'},
+    {n:'05', name:'Win Together', detail:"If the entry wins, winnings distribute automatically to every co-owner by their ownership %."}
+  ];
+  const stageBar = document.getElementById('stageBar');
+  const stageDetail = document.getElementById('stageDetail');
+  function renderStage(active){
+    stageBar.innerHTML = '';
+    stages.forEach((s,i)=>{
+      const el = document.createElement('div');
+      el.className = 'journey-stage' + (i===active ? ' active' : '');
+      el.innerHTML = `<div class="jnum">${s.n}</div><div class="jname">${s.name}</div>`;
+      el.addEventListener('click', ()=>renderStage(i));
+      stageBar.appendChild(el);
+    });
+    stageDetail.innerHTML = stages[active].detail;
+  }
+  renderStage(0);
+
+  // ---------- Bar chart ----------
+  const barItems = [
+    {topic:'Organizer', pct:60, detail:'Keeps the controlling share. Uneven splits are allowed — on a $1,000 entry, this owner pays $600.'},
+    {topic:'Friend A', pct:10, detail:'Pays $100 for a 10% share of a $1,000 entry.'},
+    {topic:'Friend B', pct:10, detail:'Pays $100 for a 10% share of a $1,000 entry.'},
+    {topic:'Friend C', pct:10, detail:'Pays $100 for a 10% share of a $1,000 entry.'},
+    {topic:'Friend D', pct:10, detail:'Pays $100 for a 10% share of a $1,000 entry.'}
+  ];
+  const barChart = document.getElementById('barChart');
+  barItems.forEach(b=>{
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    row.innerHTML = `<div class="bar-row-top"><span class="bar-topic">${b.topic}</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${b.pct}%"></div></div>
+      <div class="bar-detail">${b.detail}</div>`;
+    row.addEventListener('click', ()=>row.classList.toggle('open'));
+    barChart.appendChild(row);
+  });
+
+  // ---------- Compare table ----------
+  const compareItems = [
+    ['Chasing friends for cash via Venmo, cash apps, or spreadsheets', 'Friends pay their exact share on-platform, automatically'],
+    ['Manually calculating and sending out each person\'s winnings', 'Winnings distribute automatically by ownership %'],
+    ['Ambiguous or disputed ownership after a big win', 'Ownership is recorded on Splash, so payouts go to the right people']
+  ];
+  const compareRows = document.getElementById('compareRows');
+  compareItems.forEach(([b,a])=>{
+    const el = document.createElement('div');
+    el.className = 'compare-row';
+    el.innerHTML = `<div class="compare-cell before">${b}</div><div class="compare-arrow">→</div><div class="compare-cell after">${a}</div>`;
+    compareRows.appendChild(el);
+  });
+
+  // ---------- Status table ----------
+  const statusItems = [
+    ['KYC-verified Splash account', 'Every co-owner needs a fully verified account, same as entering a contest solo.', 'good', 'Required'],
+    ['Eligible state / jurisdiction', 'Each co-owner must be located somewhere the contest is legally allowed.', 'good', 'Required'],
+    ['Existing Splash account', "Users must already have an account to be invited — you can't invite someone to sign up mid-split.", 'good', 'Required']
+  ];
+  const statusRows = document.getElementById('statusRows');
+  statusItems.forEach(([label,desc,status,text])=>{
+    const el = document.createElement('div');
+    el.className = 'status-row';
+    el.innerHTML = `<div class="status-cell label">${label}</div><div class="status-cell desc">${desc}</div><div class="status-cell"><span class="status-pill ${status}">${text}</span></div>`;
+    statusRows.appendChild(el);
+  });
+
+  // ---------- Generic accordion builder (reused for both accordion instances) ----------
+  function buildAccordion(containerId, items, indent){
+    const container = document.getElementById(containerId);
+    items.forEach(it=>{
+      const item = document.createElement('div');
+      item.className = 'accordion-item';
+      item.innerHTML = `
+        <div class="accordion-head">
+          <div class="ah-left">${it.badge ? `<div class="badge-sm">${it.badge}</div>` : ''}<div class="accordion-title">${it.title}</div></div>
+          <div class="accordion-arrow">⌄</div>
+        </div>
+        <div class="accordion-body"><div class="accordion-body-inner" style="padding-left:${indent}px;">${it.text}</div></div>`;
+      item.querySelector('.accordion-head').addEventListener('click', ()=>item.classList.toggle('open'));
+      container.appendChild(item);
+    });
+  }
+  buildAccordion('listAccordion', [
+    {title:"Enter contests you couldn't justify solo", text:'Splitting a pricey entry means everyone chips in a smaller amount up front, so bigger contests suddenly feel accessible.'},
+    {title:'Kill the off-platform money hassle', text:'Friends pay their exact share on-platform. No chasing people down, no cash apps, no spreadsheets.'},
+    {title:'Get paid your fair share, automatically', text:"Winnings pay out to each co-owner automatically by ownership % — no one has to send anyone their cut."},
+    {title:'Clean, on-platform records', text:"The group's ownership is recorded on Splash, so winnings are attributed to the people who actually own them."},
+    {title:'One driver, no chaos', text:"One designated person makes the picks each week, so the group isn't stepping on each other."}
+  ], 16);
+  buildAccordion('secondAccordion', [
+    {badge:'1', title:'Pre-contest only', text:"Splitting must happen before the contest's first pick locks — it's a tool for setting up an entry, not something you can do mid-contest."},
+    {badge:'2', title:'Missed invites revert automatically', text:"If a co-owner doesn't accept before first pick lock, their invite is auto-declined and their % goes back to the organizer. Example: the organizer sends 20% to 4 friends; if 1 doesn't accept, the organizer gets that 20% back (now owns 40%) and the other 3 friends keep 20% each."},
+    {badge:'3', title:'Pricing is fixed, no discounts', text:"Everyone pays their exact pro-rata share on-platform. There's no free or discounted share option, and the price can't be edited down — 20% of a $1,000 entry always costs $200."},
+    {badge:'4', title:'Eligibility still applies', text:'Every co-owner needs a KYC-verified Splash account and must be in a state/jurisdiction where the contest is allowed — same as entering any contest solo.'},
+    {badge:'5', title:'Max 10 owners', text:'An entry can have the organizer plus up to 9 co-owners — 10 owners total, maximum.'},
+    {badge:'6', title:'Uneven splits are allowed', text:'The organizer can keep any share and give any share to each friend — e.g., keep 60% and give 10% to 4 friends.'},
+    {badge:'7', title:'No even 50/50 two-way split', text:"Splitting with exactly one friend isn't supported at a true 50/50, due to underlying marketplace rules — it lands at 51%/49% instead. All other combinations (3-way, uneven, etc.) are supported."},
+    {badge:'8', title:'One split per entry, no re-splitting', text:"Only the original 100% owner can start a split, and only once. Co-owners can't re-split their own slice further."}
+  ], 42);
+
+  // ---------- Roster / role directory (tap-to-expand cards) ----------
+  const roster = [
+    {code:'OG', role:'Organizer', short:'The player who enters the contest and starts the split.', tag:'#starts-the-split',
+      full:"Pays the full entry fee and is the only person who can start a split — and only once. Chooses each co-owner's share and decides who controls the picks (themselves or a co-owner). Only the organizer's original 100% ownership can be split; co-owners can't re-split their own slice."},
+    {code:'CO', role:'Co-Owner', short:'A friend invited to buy in and own a share of the entry.', tag:'#accepts-and-pays',
+      full:"Needs a KYC-verified Splash account and must be in an eligible state/jurisdiction. Reviews their exact share and price, then pays their pro-rata amount on-platform. If they don't accept before the first pick locks, their invite is auto-declined and their % reverts to the organizer."},
+    {code:'PC', role:'Pick Controller', short:'The one person who makes the picks each week.', tag:'#makes-the-picks',
+      full:'Designated by the organizer when the split is set up — either the organizer themselves or one co-owner. Only that person makes picks for the entry each week, so the group never steps on each other.'}
+  ];
+  const rosterGrid = document.getElementById('rosterGrid');
+  roster.forEach(r=>{
+    const el = document.createElement('div');
+    el.className = 'expand-card';
+    el.innerHTML = `
+      <div class="expand-card-top">
+        <div><div class="badge">${r.code}</div><p class="expand-name">${r.role}</p></div>
+        <span class="expand-arrow">⌄</span>
+      </div>
+      <p class="expand-teaser">${r.short}</p>
+      <div class="expand-full"><div class="expand-full-inner">${r.full}</div></div>
+      <span class="expand-tag">${r.tag}</span>`;
+    el.addEventListener('click', ()=>el.classList.toggle('open'));
+    rosterGrid.appendChild(el);
+  });
+
+  // ---------- Segmented selector ----------
+  const selectorOptions = [
+    {label:'Everyone accepts in time', result:'The split finalizes exactly as invited — e.g., a 4-way even split leaves 4 owners at <b>25% each</b>, having paid <b>$250 apiece</b> on a $1,000 entry.'},
+    {label:"A friend doesn't accept in time", result:"Their invite is <b>automatically declined</b> at first pick lock, and their % reverts to the organizer. Example: the organizer sends 20% to 4 friends; if 1 doesn't accept, the organizer gets that 20% back (now owns <b>40%</b>) while the other 3 friends keep 20% each."},
+    {label:'Splitting with exactly one friend', result:"A true 50/50 split isn't supported, due to underlying marketplace rules. Two-way splits land at <b>51% / 49%</b> instead — every other combination (3-way, uneven, etc.) works as expected."}
+  ];
+  const selectorButtons = document.getElementById('selectorButtons');
+  const selectorResult = document.getElementById('selectorResult');
+  function renderSelector(active){
+    selectorButtons.innerHTML = '';
+    selectorOptions.forEach((o,i)=>{
+      const b = document.createElement('button');
+      b.className = 'selector-btn' + (i===active?' active':'');
+      b.textContent = o.label;
+      b.addEventListener('click', ()=>renderSelector(i));
+      selectorButtons.appendChild(b);
+    });
+    selectorResult.innerHTML = selectorOptions[active].result;
+  }
+  renderSelector(0);
+
+  // ---------- Directory / tag grid ----------
+  const tags = [
+    {name:'Entry screen', desc:"Tap \"Group Entry\" after entering a contest to start a split."},
+    {name:'Invite flow', desc:'Add friends by username, set shares, and assign the Pick Controller.'},
+    {name:'Email + in-app notice', desc:'Invited friends are notified to review and pay their share.'},
+    {name:'First pick lock', desc:'The cutoff — unaccepted invites auto-decline here, and splitting is no longer possible.'}
+  ];
+  const tagGrid = document.getElementById('tagGrid');
+  tags.forEach(c=>{
+    const el = document.createElement('div');
+    el.className = 'tag-card';
+    el.innerHTML = `<span class="tag-name">${c.name}</span><span class="tag-desc">${c.desc}</span>`;
+    tagGrid.appendChild(el);
+  });
+</script>
+
+</body>
+</html>
