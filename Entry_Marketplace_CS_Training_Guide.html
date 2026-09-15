@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Entry Marketplace — CS Training Guide</title>
+<style>
+  :root {
+    --navy: #0b2540; --navy2: #123a5e; --teal: #14b8a6; --teal2: #2dd4bf;
+    --ink: #14213d; --sub: #516079; --bg: #f1f5f9;
+    --tip-bg: #e6fbf7; --tip-bd: #0d9488;
+    --note-bg: #eaf2ff; --note-bd: #2563eb;
+    --warn-bg: #fff7e6; --warn-bd: #d97706;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+  }
+  a { color: var(--teal); }
+  .hero {
+    position: relative;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 55%, var(--teal) 130%);
+    color: #fff; text-align: center; padding: 64px 24px 90px;
+  }
+  .hero .eyebrow {
+    display: inline-block; letter-spacing: 2px; font-size: 12px; font-weight: 700;
+    background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 999px; margin-bottom: 18px;
+  }
+  .hero h1 { margin: 0 0 10px; font-size: 34px; }
+  .hero p.sub { margin: 0; font-size: 16px; opacity: 0.85; max-width: 620px; margin: 0 auto; }
+  .hero-wave { position: absolute; bottom: -2px; left: 0; width: 100%; display: block; }
+  .contents-card {
+    max-width: 920px; margin: -46px auto 40px; background: #fff; border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(11,37,64,0.15); padding: 28px 32px; position: relative; z-index: 2;
+  }
+  .contents-card h3 { margin: 0 0 16px; color: var(--navy); font-size: 15px; letter-spacing: 1px; text-transform: uppercase; }
+  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; }
+  .toc-grid a {
+    display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink);
+    font-size: 14.5px; padding: 6px 0; border-bottom: 1px dashed #e2e8f0;
+  }
+  .toc-num {
+    display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px;
+    background: var(--teal); color: #fff; border-radius: 50%; font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  main { max-width: 920px; margin: 0 auto; padding: 0 20px 60px; }
+  .card { background: #fff; border-radius: 14px; overflow: hidden; margin-bottom: 26px; box-shadow: 0 4px 16px rgba(11,37,64,0.08); }
+  .card-banner { padding: 22px 28px; color: #fff; position: relative; }
+  .card-banner .badge {
+    display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px;
+    background: rgba(255,255,255,0.2); border-radius: 50%; font-weight: 700; font-size: 14px; margin-right: 10px;
+  }
+  .card-banner .cat { font-size: 11px; letter-spacing: 1.5px; opacity: 0.8; font-weight: 700; }
+  .card-banner h2 { margin: 8px 0 0; font-size: 21px; }
+  .card-body { padding: 26px 28px 22px; }
+  .card-body h4 { color: var(--navy2); font-size: 15px; margin: 18px 0 8px; }
+  .card-body p { margin: 0 0 12px; font-size: 15px; }
+  .card-body ul { margin: 0 0 14px; padding-left: 22px; }
+  .card-body li { margin-bottom: 6px; font-size: 15px; }
+  .tbl { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 14px; }
+  .tbl th { text-align: left; background: #f1f5f9; color: var(--navy); padding: 10px 12px; font-size: 12.5px; letter-spacing: 0.4px; }
+  .tbl td { padding: 10px 12px; border-bottom: 1px solid #edf1f5; }
+  .callout { border-radius: 10px; padding: 14px 18px; margin: 14px 0; font-size: 14.5px; border-left: 4px solid; }
+  .callout.tip { background: var(--tip-bg); border-color: var(--tip-bd); }
+  .callout.note { background: var(--note-bg); border-color: var(--note-bd); }
+  .callout.warn { background: var(--warn-bg); border-color: var(--warn-bd); }
+  .callout-title { font-weight: 700; margin-bottom: 4px; }
+  .qa { margin-bottom: 12px; }
+  .qa-q { font-weight: 700; color: var(--navy2); font-size: 14.5px; }
+  .qa-a { font-size: 14.5px; color: var(--sub); margin-top: 2px; }
+  .quick-check { margin-top: 22px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; }
+  .qc-title { font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 14px; }
+  .quiz-q { margin-bottom: 16px; }
+  .quiz-q-text { font-size: 14.5px; font-weight: 600; margin-bottom: 8px; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 6px; }
+  .opt {
+    text-align: left; padding: 9px 12px; border-radius: 8px; border: 1px solid #dbe3ec;
+    background: #fff; cursor: pointer; font-size: 14px; color: var(--ink);
+  }
+  .opt:hover:not(:disabled) { border-color: var(--teal); }
+  .opt.correct { background: #e6fbf3; border-color: #0d9488; color: #0d5c50; font-weight: 600; }
+  .opt.incorrect { background: #fdecec; border-color: #dc2626; color: #7f1d1d; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .quiz-feedback { margin-top: 6px; font-size: 13.5px; font-weight: 600; }
+  .quiz-feedback.ok { color: #0d9488; }
+  .quiz-feedback.no { color: #dc2626; }
+  .back-top { display: inline-block; margin-top: 14px; font-size: 13px; text-decoration: none; color: var(--teal2); font-weight: 600; }
+</style>
+</head>
+<body>
+<a id="top"></a>
+<div class="hero">
+  <span class="eyebrow">🎫 INTERNAL TRAINING · CUSTOMER SUPPORT TEAM</span>
+  <h1>Entry Marketplace</h1>
+  <p class="sub">The CS Team's Field Guide to buying, selling, and trading contest entries — pick control, escrow, fees, timing, and the FAQs members ask us most.</p>
+  <svg class="hero-wave" viewBox="0 0 1440 60" preserveAspectRatio="none"><path fill="#f1f5f9" d="M0,32 C240,64 480,0 720,16 C960,32 1200,64 1440,32 L1440,60 L0,60 Z"></path></svg>
+</div>
+
+<div class="contents-card">
+  <h3>📋 Table of Contents</h3>
+  <div class="toc-grid">
+    <a href="#overview"><span class="toc-num">1</span>🎯 What Is the Entry Marketplace?</a><a href="#availability"><span class="toc-num">2</span>🗺️ Availability &amp; Eligibility</a><a href="#key-concepts"><span class="toc-num">3</span>🔑 Key Concepts</a><a href="#buying"><span class="toc-num">4</span>🛒 Buying an Entry</a><a href="#selling"><span class="toc-num">5</span>💵 Selling &amp; Listing an Entry</a><a href="#offer-lifecycle"><span class="toc-num">6</span>🔄 The Offer Lifecycle</a><a href="#fees"><span class="toc-num">7</span>💰 Fees</a><a href="#timing"><span class="toc-num">8</span>⏱️ Timing &amp; Trading Windows</a><a href="#pick-control"><span class="toc-num">9</span>🎮 Pick Control in Depth</a><a href="#money"><span class="toc-num">10</span>🏦 Money: Wallet, Settlement &amp; Payouts</a><a href="#notifications"><span class="toc-num">11</span>🔔 Notifications Customers Receive</a><a href="#faq"><span class="toc-num">12</span>❓ Frequently Asked Questions</a>
+    <a href="#glossary"><span class="toc-num">13</span>📖 Quick Reference Glossary</a>
+  </div>
+</div>
+
+<main>
+
+    <section class="card" id="overview">
+      <div class="card-banner" style="background: linear-gradient(135deg, #0b2540, #123a5e);">
+        <span class="badge">1</span>
+        <span class="cat">OVERVIEW</span>
+        <h2>🎯 What Is the Entry Marketplace?</h2>
+      </div>
+      <div class="card-body">
+        <p>The Entry Marketplace is where players buy and sell entries — or shares of entries — in season-long Survivor contests that are already underway. A new player can buy their way into a contest that's already in progress, and an existing entrant can cash out before the contest ends by selling their entry, or part of it.</p>
+<div class="callout note"><div class="callout-title">ℹ️ Scope at launch</div><div>The Marketplace currently supports Survivor contests only, and only select public contests are enabled — not every contest a member plays will show a Marketplace option.</div></div>
+        
+    <div class="quick-check">
+      <div class="qc-title">🧠 Quick Check</div>
+      
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. What does the Entry Marketplace let a player do with a contest that's already in progress?</div>
+        <div class="quiz-opts" id="q_0_0"><button type="button" class="opt" data-qid="q_0_0" data-correct="0" onclick="handleAnswer(this)">Nothing — entries can't move once entered</button><button type="button" class="opt" data-qid="q_0_0" data-correct="1" onclick="handleAnswer(this)">Buy into it, or sell part or all of an entry, while it's underway</button><button type="button" class="opt" data-qid="q_0_0" data-correct="0" onclick="handleAnswer(this)">Only view its current standing</button><button type="button" class="opt" data-qid="q_0_0" data-correct="0" onclick="handleAnswer(this)">Permanently delete the entry</button></div>
+        <div class="quiz-feedback" id="q_0_0_fb"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="quiz-q-text">2. True or False: at launch, the Marketplace works across every game type on Splash.</div>
+        <div class="quiz-opts" id="q_0_1"><button type="button" class="opt" data-qid="q_0_1" data-correct="0" onclick="handleAnswer(this)">True</button><button type="button" class="opt" data-qid="q_0_1" data-correct="1" onclick="handleAnswer(this)">False</button></div>
+        <div class="quiz-feedback" id="q_0_1_fb"></div>
+      </div>
+    </div>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+
+    <section class="card" id="availability">
+      <div class="card-banner" style="background: linear-gradient(135deg, #1e3a8a, #2563eb);">
+        <span class="badge">2</span>
+        <span class="cat">GETTING STARTED</span>
+        <h2>🗺️ Availability &amp; Eligibility</h2>
+      </div>
+      <div class="card-body">
+        <h4>Supported contests at launch</h4>
+<ul><li>Survivor World Championship</li><li>The Big Splash</li><li>The Wave</li><li>The Ripple</li></ul>
+<p>Not every contest is enabled for the Marketplace — if a contest doesn't show a Marketplace tab, trading simply isn't available there.</p>
+<h4>Who can do what</h4>
+<ul><li>Selling — entrants can list their entries at any time, subject to the trading windows in Section 8.</li><li>Buying — only available to players located in an allowed jurisdiction who also meet standard account, verification (KYC), and eligibility requirements.</li><li>Placing offers — requires sufficient funds in the player's Splash wallet. Both cash and credits can be used.</li></ul>
+<div class="callout warn"><div class="callout-title">⚠️ Expected, not a bug</div><div>A member outside an allowed jurisdiction can still list entries for sale — they just won't be able to buy. That's expected behavior.</div></div>
+        
+    <div class="quick-check">
+      <div class="qc-title">🧠 Quick Check</div>
+      
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. Which of these is NOT one of the four contests supported by the Marketplace at launch?</div>
+        <div class="quiz-opts" id="q_1_0"><button type="button" class="opt" data-qid="q_1_0" data-correct="0" onclick="handleAnswer(this)">The Big Splash</button><button type="button" class="opt" data-qid="q_1_0" data-correct="0" onclick="handleAnswer(this)">The Wave</button><button type="button" class="opt" data-qid="q_1_0" data-correct="1" onclick="handleAnswer(this)">NFL Squares</button><button type="button" class="opt" data-qid="q_1_0" data-correct="0" onclick="handleAnswer(this)">Survivor World Championship</button></div>
+        <div class="quiz-feedback" id="q_1_0_fb"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="quiz-q-text">2. A member located outside an allowed jurisdiction can still…</div>
+        <div class="quiz-opts" id="q_1_1"><button type="button" class="opt" data-qid="q_1_1" data-correct="0" onclick="handleAnswer(this)">Buy, but not sell</button><button type="button" class="opt" data-qid="q_1_1" data-correct="1" onclick="handleAnswer(this)">Sell, but not buy</button><button type="button" class="opt" data-qid="q_1_1" data-correct="0" onclick="handleAnswer(this)">Neither buy nor sell</button><button type="button" class="opt" data-qid="q_1_1" data-correct="0" onclick="handleAnswer(this)">Both buy and sell, with a warning banner</button></div>
+        <div class="quiz-feedback" id="q_1_1_fb"></div>
+      </div>
+    </div>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+
+    <section class="card" id="key-concepts">
+      <div class="card-banner" style="background: linear-gradient(135deg, #0f766e, #14b8a6);">
+        <span class="badge">3</span>
+        <span class="cat">FUNDAMENTALS</span>
+        <h2>🔑 Key Concepts</h2>
+      </div>
+      <div class="card-body">
+        <h4>Ownership shares</h4>
+<p>Ownership is always shown as a percentage (e.g., “You own 60%”). An entry can be owned 100% by one person or divided among co-owners, and each owner earns that same percentage of anything the entry wins.</p>
+<ul><li>Minimum share: 1%</li><li>Partial percentages (e.g., 1.5%) are not allowed</li></ul>
+<h4>Pick control</h4>
+<p>Whoever owns 51% or more of an entry is the majority owner and controls its picks. Minority owners share in winnings but don't make picks. Buying or selling a majority share can move pick control from one person to another. (Full detail in Section 9.)</p>
+<h4>Splash Estimate (estimated value)</h4>
+<p>An entry's “Splash Estimate” is the contest's prize pool divided by the number of entries still alive.</p>
+<div class="callout note"><div class="callout-title">ℹ️ It's a guide, not a guarantee</div><div>The Splash Estimate can lag live game action. It's meant to help members price listings and offers — it is never a guaranteed sale price.</div></div>
+<h4>Escrow</h4>
+<p>When a player makes an offer, funds are pulled from their wallet and held in escrow — not paid to the seller — until the offer is accepted, declined, or expires. If it isn't accepted, funds return to the buyer's wallet automatically.</p>
+<h4>Fees</h4>
+<p>Buyers pay a fee on top of the price; sellers have a fee deducted from the sale price. Fees are tiered by sale size, and the full breakdown is always shown before a customer confirms. (Full table in Section 7.)</p>
+        
+    <div class="quick-check">
+      <div class="qc-title">🧠 Quick Check</div>
+      
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. What's the minimum ownership share a person can hold in an entry?</div>
+        <div class="quiz-opts" id="q_2_0"><button type="button" class="opt" data-qid="q_2_0" data-correct="1" onclick="handleAnswer(this)">1%</button><button type="button" class="opt" data-qid="q_2_0" data-correct="0" onclick="handleAnswer(this)">5%</button><button type="button" class="opt" data-qid="q_2_0" data-correct="0" onclick="handleAnswer(this)">10%</button><button type="button" class="opt" data-qid="q_2_0" data-correct="0" onclick="handleAnswer(this)">There is no minimum</button></div>
+        <div class="quiz-feedback" id="q_2_0_fb"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="quiz-q-text">2. What ownership percentage makes someone the “majority owner” with pick control?</div>
+        <div class="quiz-opts" id="q_2_1"><button type="button" class="opt" data-qid="q_2_1" data-correct="0" onclick="handleAnswer(this)">Exactly 50%</button><button type="button" class="opt" data-qid="q_2_1" data-correct="1" onclick="handleAnswer(this)">51% or more</button><button type="button" class="opt" data-qid="q_2_1" data-correct="0" onclick="handleAnswer(this)">60% or more</button><button type="button" class="opt" data-qid="q_2_1" data-correct="0" onclick="handleAnswer(this)">75% or more</button></div>
+        <div class="quiz-feedback" id="q_2_1_fb"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="quiz-q-text">3. When a buyer places an offer, what happens to their funds right away?</div>
+        <div class="quiz-opts" id="q_2_2"><button type="button" class="opt" data-qid="q_2_2" data-correct="0" onclick="handleAnswer(this)">They're charged immediately</button><button type="button" class="opt" data-qid="q_2_2" data-correct="1" onclick="handleAnswer(this)">They're held in escrow until the offer resolves</button><button type="button" class="opt" data-qid="q_2_2" data-correct="0" onclick="handleAnswer(this)">Nothing happens until the next day</button><button type="button" class="opt" data-qid="q_2_2" data-correct="0" onclick="handleAnswer(this)">They're sent straight to the seller pending review</button></div>
+        <div class="quiz-feedback" id="q_2_2_fb"></div>
+      </div>
+    </div>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+
+    <section class="card" id="buying">
+      <div class="card-banner" style="background: linear-gradient(135deg, #4c1d95, #7c3aed);">
+        <span class="badge">4</span>
+        <span class="cat">TRADING</span>
+        <h2>🛒 Buying an Entry</h2>
+      </div>
+      <div class="card-body">
+        <h4>Two ways to buy</h4>
+<ul><li>Buy Now — purchases the listing instantly at its asking price. The buyer is charged immediately (asking price + buyer fee), and the purchase is final.</li><li>Make an Offer — the buyer proposes their own price and share %. Funds are pulled and held in escrow while the seller decides.</li></ul>
+<p>A buyer can make an offer even on an entry that isn't actively listed for sale. The owner can accept, counter, or decline.</p>
+<h4>Counters</h4>
+<p>A seller can respond to an offer with one counter at a different price or share. The buyer can accept or decline the counter. If accepted, the buyer is charged the counter price plus the buyer fee.</p>
+<div class="callout tip"><div class="callout-title">💡 Talking to members</div><div>Remind members that Buy Now is instant and final — there's no changing your mind once it goes through. An Offer gives room to negotiate, but nothing is guaranteed until the seller accepts.</div></div>
+        
+    <div class="quick-check">
+      <div class="qc-title">🧠 Quick Check</div>
+      
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. With Buy Now, when is the buyer charged?</div>
+        <div class="quiz-opts" id="q_3_0"><button type="button" class="opt" data-qid="q_3_0" data-correct="1" onclick="handleAnswer(this)">Immediately, at the asking price plus buyer fee</button><button type="button" class="opt" data-qid="q_3_0" data-correct="0" onclick="handleAnswer(this)">After the seller confirms manually</button><button type="button" class="opt" data-qid="q_3_0" data-correct="0" onclick="handleAnswer(this)">At the end of the contest</button><button type="button" class="opt" data-qid="q_3_0" data-correct="0" onclick="handleAnswer(this)">Only if the entry ultimately wins</button></div>
+        <div class="quiz-feedback" id="q_3_0_fb"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="quiz-q-text">2. If a seller counters an offer and the buyer accepts, what are they charged?</div>
+        <div class="quiz-opts" id="q_3_1"><button type="button" class="opt" data-qid="q_3_1" data-correct="0" onclick="handleAnswer(this)">The original offer price</button><button type="button" class="opt" data-qid="q_3_1" data-correct="1" onclick="handleAnswer(this)">The counter price plus the buyer fee</button><button type="button" class="opt" data-qid="q_3_1" data-correct="0" onclick="handleAnswer(this)">The counter price only, no fee</button><button type="button" class="opt" data-qid="q_3_1" data-correct="0" onclick="handleAnswer(this)">Nothing — counters are free</button></div>
+        <div class="quiz-feedback" id="q_3_1_fb"></div>
+      </div>
+    </div>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+
+    <section class="card" id="selling">
+      <div class="card-banner" style="background: linear-gradient(135deg, #92400e, #d97706);">
+        <span class="badge">5</span>
+        <span class="cat">TRADING</span>
+        <h2>💵 Selling &amp; Listing an Entry</h2>
+      </div>
+      <div class="card-body">
+        <ul><li>A seller can list a whole entry or just a share of it, at any price they choose.</li><li>Multiple listings are allowed for the same entry (e.g., two separate 20% shares).</li><li>Listing is free — nothing changes hands until someone buys, and the entry stays the seller's until it sells.</li><li>A listing can be canceled any time before it sells.</li><li>When a share sells, the seller is paid the sale price minus the seller fee, deposited to their Splash wallet.</li><li>Pricing a share well below the Splash Estimate triggers an informational warning — it does not block the listing.</li></ul>
+<div class="callout warn"><div class="callout-title">⚠️ Majority sales move pick control</div><div>Selling 51% or more of an entry transfers pick control to the buyer. The listing flow discloses this to the seller up front — make sure members understand it before they list a majority share.</div></div>
+        
+    <div class="quick-check">
+      <div class="qc-title">🧠 Quick Check</div>
+      
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. What does it cost a member to list an entry for sale?</div>
+        <div class="quiz-opts" id="q_4_0"><button type="button" class="opt" data-qid="q_4_0" data-correct="0" onclick="handleAnswer(this)">A flat $5 listing fee</button><button type="button" class="opt" data-qid="q_4_0" data-correct="1" onclick="handleAnswer(this)">Nothing — listing is free</button><button type="button" class="opt" data-qid="q_4_0" data-correct="0" onclick="handleAnswer(this)">The seller fee, paid up front</button><button type="button" class="opt" data-qid="q_4_0" data-correct="0" onclick="handleAnswer(this)">A percentage of the Splash Estimate</button></div>
+        <div class="quiz-feedback" id="q_4_0_fb"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="quiz-q-text">2. Can a seller cancel a listing after posting it?</div>
+        <div class="quiz-opts" id="q_4_1"><button type="button" class="opt" data-qid="q_4_1" data-correct="0" onclick="handleAnswer(this)">No, once posted it's final</button><button type="button" class="opt" data-qid="q_4_1" data-correct="1" onclick="handleAnswer(this)">Yes, any time before it sells</button><button type="button" class="opt" data-qid="q_4_1" data-correct="0" onclick="handleAnswer(this)">Only within 1 hour of posting</button><button type="button" class="opt" data-qid="q_4_1" data-correct="0" onclick="handleAnswer(this)">Only if no offers have come in</button></div>
+        <div class="quiz-feedback" id="q_4_1_fb"></div>
+      </div>
+    </div>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+
+    <section class="card" id="offer-lifecycle">
+      <div class="card-banner" style="background: linear-gradient(135deg, #7f1d1d, #b91c1c);">
+        <span class="badge">6</span>
+        <span class="cat">TRADING</span>
+        <h2>🔄 The Offer Lifecycle</h2>
+      </div>
+      <div class="card-body">
+        <p>An offer moves through the following states:</p>
+<table class="tbl"><thead><tr><th>State</th><th>What it means</th></tr></thead><tbody><tr><td>Live</td><td>Offer open; buyer's funds held in escrow.</td></tr><tr><td>Countered</td><td>Seller proposed a different price/share; buyer can accept or decline.</td></tr><tr><td>Accepted</td><td>Trade settles instantly — share transfers, seller is paid, escrow released. Final.</td></tr><tr><td>Declined</td><td>Seller passed. Buyer's escrowed funds are released back to their wallet.</td></tr><tr><td>Expired</td><td>Offer timed out (no response, or hit the 90-minute pick-deadline cutoff). Funds released.</td></tr><tr><td>Canceled</td><td>Buyer withdrew the offer before acceptance. Funds released.</td></tr></tbody></table>
+<h4>Two timing rules that matter</h4>
+<ul><li>A buyer can edit or cancel an open offer any time before it's accepted or expires.</li><li>An open offer must be accepted at least 90 minutes before the pick deadline — otherwise it expires automatically.</li></ul>
+<div class="callout note"><div class="callout-title">ℹ️ Why this exists</div><div>The 90-minute rule protects both sides from a trade landing too close to lock, when there wouldn't be time to make a pick.</div></div>
+        
+    <div class="quick-check">
+      <div class="qc-title">🧠 Quick Check</div>
+      
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. What happens to an offer that isn't accepted at least 90 minutes before the pick deadline?</div>
+        <div class="quiz-opts" id="q_5_0"><button type="button" class="opt" data-qid="q_5_0" data-correct="0" onclick="handleAnswer(this)">It stays open until manually canceled</button><button type="button" class="opt" data-qid="q_5_0" data-correct="1" onclick="handleAnswer(this)">It expires automatically and escrow is released</button><button type="button" class="opt" data-qid="q_5_0" data-correct="0" onclick="handleAnswer(this)">It auto-accepts at the listed price</button><button type="button" class="opt" data-qid="q_5_0" data-correct="0" onclick="handleAnswer(this)">It converts into a Buy Now</button></div>
+        <div class="quiz-feedback" id="q_5_0_fb"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="quiz-q-text">2. Which offer state means the trade is complete and final?</div>
+        <div class="quiz-opts" id="q_5_1"><button type="button" class="opt" data-qid="q_5_1" data-correct="0" onclick="handleAnswer(this)">Live</button><button type="button" class="opt" data-qid="q_5_1" data-correct="0" onclick="handleAnswer(this)">Countered</button><button type="button" class="opt" data-qid="q_5_1" data-correct="1" onclick="handleAnswer(this)">Accepted</button><button type="button" class="opt" data-qid="q_5_1" data-correct="0" onclick="handleAnswer(this)">Expired</button></div>
+        <div class="quiz-feedback" id="q_5_1_fb"></div>
+      </div>
+    </div>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+
+    <section class="card" id="fees">
+      <div class="card-banner" style="background: linear-gradient(135deg, #1e293b, #334155);">
+        <span class="badge">7</span>
+        <span class="cat">MONEY</span>
+        <h2>💰 Fees</h2>
+      </div>
+      <div class="card-body">
+        <p>Fees are tiered by sale size. Buyers pay their fee on top of the price; sellers have their fee deducted from the sale price.</p>
+<table class="tbl"><thead><tr><th>Sale Size</th><th>Buyer Fee (added on top)</th><th>Seller Fee (deducted from sale)</th></tr></thead><tbody><tr><td>Up to $25,000</td><td>2%</td><td>4%</td></tr><tr><td>Above $25,000</td><td>1%</td><td>2%</td></tr></tbody></table>
+<div class="callout tip"><div class="callout-title">💡 Worked example</div><div>On a $10,000 sale: the buyer pays $10,200 total ($10,000 + 2%), and the seller receives $9,600 ($10,000 − 4%).</div></div>
+        
+    <div class="quick-check">
+      <div class="qc-title">🧠 Quick Check</div>
+      
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. What's the buyer fee on a sale of $15,000?</div>
+        <div class="quiz-opts" id="q_6_0"><button type="button" class="opt" data-qid="q_6_0" data-correct="0" onclick="handleAnswer(this)">1%</button><button type="button" class="opt" data-qid="q_6_0" data-correct="1" onclick="handleAnswer(this)">2%</button><button type="button" class="opt" data-qid="q_6_0" data-correct="0" onclick="handleAnswer(this)">4%</button><button type="button" class="opt" data-qid="q_6_0" data-correct="0" onclick="handleAnswer(this)">5%</button></div>
+        <div class="quiz-feedback" id="q_6_0_fb"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="quiz-q-text">2. On a $10,000 sale, how much does the seller actually receive?</div>
+        <div class="quiz-opts" id="q_6_1"><button type="button" class="opt" data-qid="q_6_1" data-correct="0" onclick="handleAnswer(this)">$10,000</button><button type="button" class="opt" data-qid="q_6_1" data-correct="0" onclick="handleAnswer(this)">$10,200</button><button type="button" class="opt" data-qid="q_6_1" data-correct="1" onclick="handleAnswer(this)">$9,600</button><button type="button" class="opt" data-qid="q_6_1" data-correct="0" onclick="handleAnswer(this)">$9,800</button></div>
+        <div class="quiz-feedback" id="q_6_1_fb"></div>
+      </div>
+    </div>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+
+    <section class="card" id="timing">
+      <div class="card-banner" style="background: linear-gradient(135deg, #134e4a, #0d9488);">
+        <span class="badge">8</span>
+        <span class="cat">TIMING</span>
+        <h2>⏱️ Timing &amp; Trading Windows</h2>
+      </div>
+      <div class="card-body">
+        <ul><li>Trading opens only after the first slate, week, or day of games in a contest is complete — never before the contest has started.</li><li>All trading pauses 90 minutes before any game goes live, and stays paused for the entire game.</li><li>All open offers must be accepted at least 90 minutes before the pick deadline, or they expire automatically — meaning every week, all open offers will expire at the pick deadline.</li></ul>
+<div class="callout warn"><div class="callout-title">⚠️ Example</div><div>90 minutes before Thursday Night Football, the Marketplace pauses. Once the game finalizes, the Marketplace reopens.</div></div>
+        
+    <div class="quick-check">
+      <div class="qc-title">🧠 Quick Check</div>
+      
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. When does trading pause around a game?</div>
+        <div class="quiz-opts" id="q_7_0"><button type="button" class="opt" data-qid="q_7_0" data-correct="0" onclick="handleAnswer(this)">Only during the game itself</button><button type="button" class="opt" data-qid="q_7_0" data-correct="1" onclick="handleAnswer(this)">Starting 90 minutes before the game through the end of the game</button><button type="button" class="opt" data-qid="q_7_0" data-correct="0" onclick="handleAnswer(this)">Only in the final two minutes</button><button type="button" class="opt" data-qid="q_7_0" data-correct="0" onclick="handleAnswer(this)">Trading never pauses</button></div>
+        <div class="quiz-feedback" id="q_7_0_fb"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="quiz-q-text">2. When does trading first open for a new contest?</div>
+        <div class="quiz-opts" id="q_7_1"><button type="button" class="opt" data-qid="q_7_1" data-correct="0" onclick="handleAnswer(this)">The moment the contest is created</button><button type="button" class="opt" data-qid="q_7_1" data-correct="1" onclick="handleAnswer(this)">After the first slate, week, or day of games is complete</button><button type="button" class="opt" data-qid="q_7_1" data-correct="0" onclick="handleAnswer(this)">Only after the season ends</button><button type="button" class="opt" data-qid="q_7_1" data-correct="0" onclick="handleAnswer(this)">Immediately upon a member's first pick</button></div>
+        <div class="quiz-feedback" id="q_7_1_fb"></div>
+      </div>
+    </div>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+
+    <section class="card" id="pick-control">
+      <div class="card-banner" style="background: linear-gradient(135deg, #312e81, #4338ca);">
+        <span class="badge">9</span>
+        <span class="cat">FUNDAMENTALS</span>
+        <h2>🎮 Pick Control in Depth</h2>
+      </div>
+      <div class="card-body">
+        <p>Pick control is the concept customers most often misunderstand, so know it well:</p>
+<ul><li>The majority owner (51%+) makes the picks for the entry. There is always exactly one pick controller.</li><li>Selling 51% or more of an entry transfers pick control to the buyer as part of that trade.</li><li>When pick control transfers, the entry's current and upcoming picks are cleared. The new controller must make their own pick before the pick deadline — the previous owner's pick no longer stands.</li><li>Minority owners share in winnings but cannot make picks.</li></ul>
+<div class="callout note"><div class="callout-title">ℹ️ Minority-owner visibility</div><div>Before the pick deadline, minority owners cannot see the current week's pick — only whether a pick has been made. After the deadline, the pick becomes visible to everyone.</div></div>
+        
+    <div class="quick-check">
+      <div class="qc-title">🧠 Quick Check</div>
+      
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. When pick control transfers to a new majority owner, what happens to the entry's current pick?</div>
+        <div class="quiz-opts" id="q_8_0"><button type="button" class="opt" data-qid="q_8_0" data-correct="0" onclick="handleAnswer(this)">It stays in place</button><button type="button" class="opt" data-qid="q_8_0" data-correct="1" onclick="handleAnswer(this)">It's cleared — the new owner must make their own pick</button><button type="button" class="opt" data-qid="q_8_0" data-correct="0" onclick="handleAnswer(this)">It's split proportionally between owners</button><button type="button" class="opt" data-qid="q_8_0" data-correct="0" onclick="handleAnswer(this)">The previous owner keeps making that week's pick</button></div>
+        <div class="quiz-feedback" id="q_8_0_fb"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="quiz-q-text">2. When can a minority owner see the current week's pick?</div>
+        <div class="quiz-opts" id="q_8_1"><button type="button" class="opt" data-qid="q_8_1" data-correct="0" onclick="handleAnswer(this)">Immediately</button><button type="button" class="opt" data-qid="q_8_1" data-correct="1" onclick="handleAnswer(this)">Only after the pick deadline passes</button><button type="button" class="opt" data-qid="q_8_1" data-correct="0" onclick="handleAnswer(this)">Never</button><button type="button" class="opt" data-qid="q_8_1" data-correct="0" onclick="handleAnswer(this)">Only if they own more than 25%</button></div>
+        <div class="quiz-feedback" id="q_8_1_fb"></div>
+      </div>
+    </div>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+
+    <section class="card" id="money">
+      <div class="card-banner" style="background: linear-gradient(135deg, #831843, #be185d);">
+        <span class="badge">10</span>
+        <span class="cat">MONEY</span>
+        <h2>🏦 Money: Wallet, Settlement &amp; Payouts</h2>
+      </div>
+      <div class="card-body">
+        <ul><li>All buying and selling runs through the player's Splash wallet. If a buyer is short on funds, they're prompted to deposit and returned to the same screen.</li><li>Settlement is instant — because offers are pre-funded through escrow, an accepted offer or Buy Now completes immediately: shares transfer, the seller is paid net proceeds, and escrow releases in the same moment.</li><li>Sellers receive the sale price minus the seller fee, which they can use to enter other contests or withdraw.</li><li>Winnings are split by ownership percentage if the entry wins.</li><li>Completed purchases and sales are final. Escrowed funds on declined, canceled, or expired offers are returned automatically.</li></ul>
+<div class="callout tip"><div class="callout-title">💡 No waiting period</div><div>There's no multi-day settlement delay — net proceeds land in the seller's wallet the instant the sale completes.</div></div>
+        
+    <div class="quick-check">
+      <div class="qc-title">🧠 Quick Check</div>
+      
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. How quickly does a seller get paid after a sale completes?</div>
+        <div class="quiz-opts" id="q_9_0"><button type="button" class="opt" data-qid="q_9_0" data-correct="0" onclick="handleAnswer(this)">Within 24 hours</button><button type="button" class="opt" data-qid="q_9_0" data-correct="1" onclick="handleAnswer(this)">Instantly, at the moment of settlement</button><button type="button" class="opt" data-qid="q_9_0" data-correct="0" onclick="handleAnswer(this)">At the end of the contest</button><button type="button" class="opt" data-qid="q_9_0" data-correct="0" onclick="handleAnswer(this)">Within 3–5 business days</button></div>
+        <div class="quiz-feedback" id="q_9_0_fb"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="quiz-q-text">2. If an offer is declined, canceled, or expires, what happens to the buyer's escrowed funds?</div>
+        <div class="quiz-opts" id="q_9_1"><button type="button" class="opt" data-qid="q_9_1" data-correct="0" onclick="handleAnswer(this)">They're forfeited</button><button type="button" class="opt" data-qid="q_9_1" data-correct="1" onclick="handleAnswer(this)">They're automatically returned to the buyer's wallet</button><button type="button" class="opt" data-qid="q_9_1" data-correct="0" onclick="handleAnswer(this)">They're converted to credits</button><button type="button" class="opt" data-qid="q_9_1" data-correct="0" onclick="handleAnswer(this)">A support ticket is required to release them</button></div>
+        <div class="quiz-feedback" id="q_9_1_fb"></div>
+      </div>
+    </div>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+
+    <section class="card" id="notifications">
+      <div class="card-banner" style="background: linear-gradient(135deg, #0b2540, #123a5e);">
+        <span class="badge">11</span>
+        <span class="cat">GETTING STARTED</span>
+        <h2>🔔 Notifications Customers Receive</h2>
+      </div>
+      <div class="card-body">
+        <p>Customers are notified in-app and by email for these Marketplace events:</p>
+<ul><li>Offer received (seller) — someone made an offer on their entry.</li><li>Offer accepted (buyer) — their offer was accepted and they now own the share.</li><li>Counter received (buyer) — the seller countered their offer.</li><li>Offer declined (buyer) — the seller passed; escrow released.</li><li>Offer expired (buyer) — the offer timed out; escrow released.</li><li>Entry sold (seller) — a sale completed, with net proceeds.</li></ul>
+        
+    <div class="quick-check">
+      <div class="qc-title">🧠 Quick Check</div>
+      
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. Which of these is NOT one of the Marketplace notifications a customer receives?</div>
+        <div class="quiz-opts" id="q_10_0"><button type="button" class="opt" data-qid="q_10_0" data-correct="0" onclick="handleAnswer(this)">Offer accepted</button><button type="button" class="opt" data-qid="q_10_0" data-correct="0" onclick="handleAnswer(this)">Entry sold</button><button type="button" class="opt" data-qid="q_10_0" data-correct="1" onclick="handleAnswer(this)">Weekly leaderboard update</button><button type="button" class="opt" data-qid="q_10_0" data-correct="0" onclick="handleAnswer(this)">Counter received</button></div>
+        <div class="quiz-feedback" id="q_10_0_fb"></div>
+      </div>
+    </div>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+
+    <section class="card" id="faq">
+      <div class="card-banner" style="background: linear-gradient(135deg, #1e3a8a, #2563eb);">
+        <span class="badge">12</span>
+        <span class="cat">SUPPORT</span>
+        <h2>❓ Frequently Asked Questions</h2>
+      </div>
+      <div class="card-body">
+        <h4>Getting started</h4>
+<div class="qa"><div class="qa-q">Q: What is the Entry Marketplace?</div><div class="qa-a">A: It's where members buy and sell entries, or shares of entries, in contests that are already in progress — buying into a live contest, or cashing out before it ends.</div></div><div class="qa"><div class="qa-q">Q: Which contests can members trade in?</div><div class="qa-a">A: Select public Survivor contests are enabled at launch. If a contest isn't shown in the Marketplace, it isn't available for trading.</div></div>
+<h4>Buying</h4>
+<div class="qa"><div class="qa-q">Q: Can a member buy just part of an entry?</div><div class="qa-a">A: Yes — a full entry or a share of one. They own that percentage and earn the same percentage of anything the entry wins.</div></div><div class="qa"><div class="qa-q">Q: What's the difference between Buy Now and making an offer?</div><div class="qa-a">A: Buy Now charges immediately at the listed price. An offer proposes a price with funds held in escrow — nothing is charged unless the seller accepts.</div></div><div class="qa"><div class="qa-q">Q: Why does a member need money in their wallet just to make an offer?</div><div class="qa-a">A: Offers are pre-funded so a trade can settle instantly if accepted. The amount plus the buyer fee sits in escrow until then.</div></div>
+<h4>Selling</h4>
+<div class="qa"><div class="qa-q">Q: How much will a seller actually receive?</div><div class="qa-a">A: The sale price minus the seller fee — 4% up to $25,000, 2% above that. The exact net amount is shown before listing and again at sale.</div></div><div class="qa"><div class="qa-q">Q: Can a member cancel a listing?</div><div class="qa-a">A: Yes, any time before it sells.</div></div>
+<h4>Offers, counters &amp; pick control</h4>
+<div class="qa"><div class="qa-q">Q: A member's offer was declined — were they charged?</div><div class="qa-a">A: No. Declined offers are never charged — escrowed funds are released back to the wallet.</div></div><div class="qa"><div class="qa-q">Q: A member bought a majority share and there's no pick set — why?</div><div class="qa-a">A: Pick control clears the entry's current and upcoming picks on transfer. The new controller must make their own pick before the deadline.</div></div>
+<h4>Money &amp; timing</h4>
+<div class="qa"><div class="qa-q">Q: Can a member get a refund on a purchase?</div><div class="qa-a">A: Completed purchases and sales are final and generally can't be reversed. Escrowed funds for a declined, canceled, or expired offer return automatically.</div></div><div class="qa"><div class="qa-q">Q: Why can't a member trade right now?</div><div class="qa-a">A: Trading pauses while games are live and resumes once they finish. It also only opens after the first slate/week/day of a contest completes.</div></div>
+        
+    <div class="quick-check">
+      <div class="qc-title">🧠 Quick Check</div>
+      
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. A member's offer was declined — were they charged?</div>
+        <div class="quiz-opts" id="q_11_0"><button type="button" class="opt" data-qid="q_11_0" data-correct="0" onclick="handleAnswer(this)">Yes, a cancellation fee applies</button><button type="button" class="opt" data-qid="q_11_0" data-correct="1" onclick="handleAnswer(this)">No, declined offers are never charged</button><button type="button" class="opt" data-qid="q_11_0" data-correct="0" onclick="handleAnswer(this)">Only the buyer fee</button><button type="button" class="opt" data-qid="q_11_0" data-correct="0" onclick="handleAnswer(this)">Yes, the full offer amount</button></div>
+        <div class="quiz-feedback" id="q_11_0_fb"></div>
+      </div>
+      <div class="quiz-q">
+        <div class="quiz-q-text">2. Can a completed purchase be refunded?</div>
+        <div class="quiz-opts" id="q_11_1"><button type="button" class="opt" data-qid="q_11_1" data-correct="0" onclick="handleAnswer(this)">Yes, anytime within 24 hours</button><button type="button" class="opt" data-qid="q_11_1" data-correct="1" onclick="handleAnswer(this)">No, completed purchases and sales are final</button><button type="button" class="opt" data-qid="q_11_1" data-correct="0" onclick="handleAnswer(this)">Yes, if the entry is later eliminated</button><button type="button" class="opt" data-qid="q_11_1" data-correct="0" onclick="handleAnswer(this)">Only with a support ticket within 1 hour</button></div>
+        <div class="quiz-feedback" id="q_11_1_fb"></div>
+      </div>
+    </div>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+
+    <section class="card" id="glossary">
+      <div class="card-banner" style="background: linear-gradient(135deg, #0f766e, #14b8a6);">
+        <span class="badge">13</span>
+        <span class="cat">REFERENCE</span>
+        <h2>📖 Quick Reference Glossary</h2>
+      </div>
+      <div class="card-body">
+        <table class="tbl">
+          <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Ownership share</strong></td><td>The percentage of an entry a person owns; determines their cut of winnings. 1% minimum, no partial percentages.</td></tr><tr><td><strong>Pick control</strong></td><td>The right to make an entry's picks, held by whoever owns 51% or more of it.</td></tr><tr><td><strong>Majority owner</strong></td><td>An owner with 51%+ of an entry — the pick controller.</td></tr><tr><td><strong>Minority owner</strong></td><td>An owner with less than 51% — shares in winnings, cannot make picks.</td></tr><tr><td><strong>Splash Estimate</strong></td><td>Prize pool ÷ entries still alive; a pricing guide, not a guaranteed value.</td></tr><tr><td><strong>Escrow</strong></td><td>Where a buyer's funds sit — held, not paid out — while an offer is open.</td></tr><tr><td><strong>Buy Now</strong></td><td>Instant purchase at the listed asking price; charged immediately and final.</td></tr><tr><td><strong>Make an Offer</strong></td><td>A buyer-proposed price/share; funds held in escrow until the seller responds.</td></tr><tr><td><strong>Counter</strong></td><td>A seller's one-time alternate price/share in response to an offer.</td></tr><tr><td><strong>Buyer fee</strong></td><td>Fee added on top of the price the buyer pays (2% up to $25k, 1% above).</td></tr><tr><td><strong>Seller fee</strong></td><td>Fee deducted from the sale price the seller receives (4% up to $25k, 2% above).</td></tr>
+          </tbody>
+        </table>
+        <a href="#top" class="back-top">↑ Back to top</a>
+      </div>
+    </section>
+</main>
+
+<script>
+function handleAnswer(btn) {
+  const qid = btn.getAttribute('data-qid');
+  const group = document.getElementById(qid);
+  const fb = document.getElementById(qid + '_fb');
+  const isCorrect = btn.getAttribute('data-correct') === '1';
+  if (isCorrect) {
+    // Lock the whole question, mark this one correct
+    Array.from(group.querySelectorAll('.opt')).forEach(b => b.disabled = true);
+    btn.classList.add('correct');
+    fb.textContent = '✓ Correct!';
+    fb.className = 'quiz-feedback ok';
+  } else {
+    // Lock only this button, leave the rest clickable
+    btn.disabled = true;
+    btn.classList.add('incorrect');
+    fb.textContent = 'Not quite — try again';
+    fb.className = 'quiz-feedback no';
+  }
+}
+</script>
+</body>
+</html>
